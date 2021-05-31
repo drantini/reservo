@@ -1,26 +1,27 @@
 import './App.css';
 import AdminPanel from '../AdminPanel/AdminPanel'
 import SignIn from '../SignIn/SignIn'
+import ForgotPassword from '../ForgotPassword/ForgotPassword'
 import ReservationSystem from '../ReservationSystem/ReservationSystem'
+import AccountManagement from '../AccountManagement/AccountManagement'
 import { auth, firestore } from '../../helpers/firebase'
-
 import { useAuthState } from 'react-firebase-hooks/auth';
 
 import { useTitle } from '../../helpers/hooks/setTitle';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
 import {
   BrowserRouter as Router,
-  Switch,
   Route,
   Link
 } from "react-router-dom";
 
+import { AnimatedSwitch } from 'react-router-transition';
 
 
 function App() {
-  const [user] = useAuthState(auth());
-
+  const [user] = useAuthState(auth);
+  const [isAdmin, setIsAdmin] = useState(false);
   useTitle('Reservo')
 
   const closeNav = () =>{
@@ -29,6 +30,14 @@ function App() {
   const openNav = () =>{
     document.getElementById('sidenav').style.width = "250px";
   }
+  useEffect(() => {
+    if (user == null) return;
+    let userRef = firestore().collection('users').doc(user.uid)
+    userRef.get().then(user => {
+      setIsAdmin(user.data().admin);
+    
+    })
+  })
 
   return (
     <div className="App">
@@ -41,8 +50,9 @@ function App() {
             <br/>
             <Link to="/">Home</Link>
             <br/>
-            <Link to="/admin">Admin</Link>
-
+            {isAdmin ? <Link to="/admin">Admin</Link> : null}
+            <br/>
+            {user? <Link to="/account">Account</Link> : <Link to="/signin">Sign in</Link>}
 
           </div>
           <div class="container" onClick={openNav}>
@@ -52,14 +62,30 @@ function App() {
           </div> 
           
 
-          <Switch>
+          <AnimatedSwitch 
+            atEnter={{ opacity: 0 }}
+            atLeave={{ opacity: 0 }}
+            atActive={{ opacity: 1 }}
+            className="switch-wrapper">
             <Route path="/admin">
-            {user ? <AdminPanel/> : <SignIn/>}
+            {user && isAdmin ? <AdminPanel/> : <span>Please sign in as administrator to see contents.</span>}
+            </Route>
+            <Route path="/signin">
+              <SignIn user={user}/>
+            </Route>
+            <Route path="/account">
+              {user ? <AccountManagement user={user}/> : null}
+            </Route>
+            <Route path="/forgot">
+              <ForgotPassword/>
             </Route>
             <Route path="/">
-              <ReservationSystem/>
+              <ReservationSystem user={user}/>
             </Route>
-          </Switch>
+
+
+          </AnimatedSwitch>
+
         </div>
         </Router>
         

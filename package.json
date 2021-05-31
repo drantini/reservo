@@ -14,13 +14,14 @@
     "react-firebase-hooks": "^3.0.3",
     "react-loader-spinner": "^4.0.0",
     "react-router-dom": "^5.2.0",
+    "react-router-transition": "^2.1.0",
     "react-scripts": "4.0.3",
     "react-timecalendar": "^2.0.1",
     "web-vitals": "^1.0.1"
   },
   "scripts": {
     "start": "react-scripts start",
-    "build": "react-scripts build",
+    "build": "GENERATE_SOURCEMAP=false react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },

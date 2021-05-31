@@ -1,12 +1,30 @@
-import React from 'react'
+import { useState, useEffect} from 'react'
 import TimeCalendar from 'react-timecalendar';
 import './Steps.css'
 import { motion } from 'framer-motion';
 
 function Step1(props){
+    const [stationNames, setStationNames] = useState([]);
+    
+
+    const loadStations = () => {
+        let loadedStationNames = []
+        props.roomsRef.get().then((querySnapshot) =>{
+            querySnapshot.forEach((doc) => {
+                loadedStationNames.push(doc.data().name)
+                
+            })
+            setStationNames(loadedStationNames)
+
+        })
+    }
+    useEffect(() => {
+        loadStations();
+    }, [])
     if (props.currentStep != 1){
         return null;
     }
+
     return(
         <motion.div initial={{ opacity: 0}} animate={{ opacity: 1 }}
         transition={{
@@ -14,12 +32,12 @@ function Step1(props){
           stiffness: 100,
           damping: 20
         }} className="step" id="step">
-        <label for="rooms">
+        <label>
             Select a room...
             <br/>
         <select name="rooms" id="rooms" onChange={props.handleRoomChange}>
             <option>Choose</option>
-            {props.stationNames.map((station) => <option>{station}</option>)}
+            {stationNames.map((station) => <option key={station}>{station}</option>)}
         </select>
         </label>
         </motion.div>

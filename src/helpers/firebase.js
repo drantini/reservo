@@ -2,9 +2,6 @@ import firebase from 'firebase/app'
 import 'firebase/firestore'
 import 'firebase/auth'
 
-import { useAuthState } from 'react-firebase-hooks/auth';
-import { useCollectionData } from 'react-firebase-hooks/firestore';
-
 firebase.initializeApp({
     apiKey: "AIzaSyClZyAC8KqAqo9qW8XtWtiCDRRtnRZjPVo",
     authDomain: "reservo-db3e5.firebaseapp.com",
@@ -16,5 +13,5 @@ firebase.initializeApp({
 
 })
 
-export const auth = firebase.auth;
+export const auth = firebase.auth();
 export const firestore = firebase.firestore;

@@ -7,14 +7,6 @@ import InputPopUp from '../InputPopUp/InputPopUp';
 import { auth, firestore } from '../../helpers/firebase'
 import { useCollectionData } from 'react-firebase-hooks/firestore';
 
-function LeftNotification(props){
-    return(
-        <div id={props.type} className="notification">
-            <span>{props.text}</span>
-        </div>
-    )
-}
-
 function Loading(props){
     return(
         <div id="reservation" className="reservation">
@@ -69,7 +61,7 @@ function Room(props){
             <button className="cancel-room" onClick={removeRoom}>X</button>
 
             <span>{props.name}</span>
-            {bookings && bookings.map(booking => <Reservation bookingRef={bookingReference} name={booking.customer_name} phone_number={booking.phone_number} start={booking.start_time}/>)}
+            {bookings && bookings.map(booking => <Reservation key={roomId + booking.start_time} bookingRef={bookingReference} name={booking.customer_name} phone_number={booking.phone_number} start={booking.start_time}/>)}
 
         </div>
     )
@@ -155,11 +147,10 @@ function Reservation(props){
 function AdminPanel(props) {
     const [showAddRoom, setShowAddRoom] = useState(false);
     const [nameRoom, setNameRoom] = useState("");
-    const [nextRoomId, setNextRoomId] = useState(0);
     const [showLoadingAddRoom, setShowLoadingAddRoom] = useState(false);
     const SignOut = e => {
         e.preventDefault();
-        auth().signOut().then(() => {
+        auth.signOut().then(() => {
             console.log("Signed out successfully.")
         }).catch((e) => {
             console.log(e);
@@ -174,14 +165,12 @@ function AdminPanel(props) {
     //TODO: Add functionality for add room
     const AddRoom = () => {
         setShowAddRoom(true);
-        setNextRoomId(stations.length);
     }
 
     const CreateRoom = () => {
         if (nameRoom.length <= 0){
             return alert("Please enter room name.")
         }
-        setNextRoomId(stations.length);
         setShowAddRoom(false);
         setShowLoadingAddRoom(true);
         roomsRef.add({name: nameRoom}).then((res) => {
@@ -194,11 +183,11 @@ function AdminPanel(props) {
     }
     return(
         <div>
-
+            <button className="signin-btn" onClick={SignOut}>Sign out</button>
             <p>Welcome to Admin Panel of Reservo.</p>
             <span>Upcoming reservations:</span><br/>
             <div className="rooms">
-            {stations && stations.map(station => <Room name={station.name}></Room>)}
+            {stations && stations.map(station => <Room key={station.name} name={station.name}></Room>)}
 
             <button onClick={AddRoom}>Add Room</button>
             </div>

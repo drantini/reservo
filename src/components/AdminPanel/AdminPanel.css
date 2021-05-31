@@ -85,9 +85,11 @@ input{
     border-bottom: 2px solid gray;
     color: white;
     max-width: 200px;
-    margin-bottom: 5px; 
+    margin-top: 5px;
+    margin-bottom: 10px; 
     -moz-appearance: textfield;
     text-align: center;
+    font-size: 17px;
 }
 input[type="number"]{
     max-width: 80px;

@@ -24,3 +24,24 @@
 .finish{
     background-color: green;
 }
+select{
+    border-radius: 10px;
+    padding: 5px 5px;
+}
+select:hover{
+    cursor: pointer;
+}
+select:focus{
+    outline: none;
+}
+option{
+    border-radius: 10px;
+}
+.signin-btn{
+    border: 1px solid gray;
+    border-radius: 10px;
+    position: fixed; /* Stay in place */
+    z-index: 1; /* Stay on top */
+    top: 0; /* Stay at the top */
+    right: 0;
+}

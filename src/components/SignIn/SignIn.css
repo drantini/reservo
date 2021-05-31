@@ -4,4 +4,12 @@ button{
     height: 30px;
     margin-top: 10px;
     margin-right: 10px;
+    margin-bottom: 5px;
+}
+.forgot{
+    color: gray;
+    
+}
+.forgot:hover{
+    cursor: pointer;
 }

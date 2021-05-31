@@ -2,10 +2,26 @@
   text-align: center;
 }
 
+.switch-wrapper {
+  position: relative;
+  background-color: #282c34;
+  min-height:100vh;
+  min-width: 50vw;
+  display: flex;
+  flex-direction: column;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  color: white;
+}
 
+.switch-wrapper > div {
+  position: absolute;
+
+}
 .App-header {
   background-color: #282c34;
-  min-height: 100vh;
+  min-height:100vh;
   display: flex;
   flex-direction: column;
   flex-wrap: wrap;
@@ -14,15 +30,16 @@
   color: white;
 }
 button{
-  transition: 0.2s ease-in;
-  background: transparent;
-  color: white;
+  transition: 0.3s ease-in;
+  background: rgb(204, 204, 204);
+  color: #282c34;
   overflow: hidden;
+  min-width: 60px;
 }
 button:hover{
-  background: white;
-  color: #282c34;
-  letter-spacing: 1px;
+  background: #282c34;
+  color: rgb(204, 204, 204);
+  cursor: pointer;
 }
 
  /* The side navigation menu */
