@@ -2,6 +2,7 @@ import { useState, useEffect} from 'react'
 import TimeCalendar from 'react-timecalendar';
 import './Steps.css'
 import { motion } from 'framer-motion';
+import { auth, firebaseBuffer } from '../../helpers/firebase'
 
 function Step1(props){
     const [stationNames, setStationNames] = useState([]);
@@ -73,6 +74,23 @@ function Step2(props){
 }
 
 function Step3(props){
+    const [allowSubmit, setAllowSubmit] = useState(false);
+    useEffect(() => {
+        if (props.currentStep == 3){
+            window.recaptchaVerifier = new firebaseBuffer.auth.RecaptchaVerifier(
+                "captcha-container", {
+                    'size': 'small',
+                    'callback': (response) => {
+                        setAllowSubmit(true);
+                    },
+                    'expired-callback': () => {
+                        setAllowSubmit(false);
+                    }
+                }
+            );
+            window.recaptchaVerifier.render()
+        }
+    }, [props.currentStep])
     if (props.currentStep != 3){
         return null;
     }
@@ -88,6 +106,9 @@ function Step3(props){
         <input type="text" value={props.numberCustomer} onChange={e => props.setNumberCustomer(e.target.value)}/>
 
         </label><br/>
+        <div id="captcha-container" className="captcha-container"></div>
+        <button id="finish" className="finish" onClick={props.addReservation} disabled={!allowSubmit}>Add reservation</button>
+
         </div>
     )
 }

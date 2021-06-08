@@ -2,9 +2,10 @@ import React from 'react'
 
 import './SignIn.css'
 import { useHistory } from 'react-router-dom';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 
 import { useState, useEffect } from 'react';
-import { auth, firestore } from '../../helpers/firebase'
+import { auth, firestore, firebaseBuffer } from '../../helpers/firebase'
 
 function SignIn(props) {
     const [email, setEmail] = useState('');
@@ -22,6 +23,32 @@ function SignIn(props) {
         })
 
     };
+    const SignInWithGoogle = e => {
+        let provider = new firebaseBuffer.auth.GoogleAuthProvider();
+        auth.signInWithPopup(provider)
+        .then((result) => {
+            console.log(result.user)
+            let userRef = firestore().collection('users').doc(result.user.uid)
+            userRef.set({
+                admin: false,
+            })
+        }).catch((error) => {
+            alert(error);
+        })
+    }
+    const SignInWithFacebook = e => {
+        let provider = new firebaseBuffer.auth.FacebookAuthProvider();
+        auth.signInWithPopup(provider)
+        .then((result) => {
+            console.log(result.user)
+            let userRef = firestore().collection('users').doc(result.user.uid)
+            userRef.set({
+                admin: false,
+            })
+        }).catch((error) => {
+            alert(error);
+        })
+    }
     const SignUp = e => {
         e.preventDefault();
         auth.
@@ -67,6 +94,9 @@ function SignIn(props) {
                 <button onClick={SignUp}>Sign up</button>
                 <button onClick={SignIn}>Sign in</button><br/>
                 <a className="forgot" onClick={() => history.push("/forgot")}>Forgot password?</a>
+                <div className="separator">OR</div>
+                <button onClick={SignInWithGoogle}><FontAwesomeIcon icon={['fab', 'google']} /> Sign in with Google</button><br/>
+                <button onClick={SignInWithFacebook}><FontAwesomeIcon icon={['fab', 'facebook']}/> Sign in with Facebook</button>
 
             </div>
         

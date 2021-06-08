@@ -133,18 +133,13 @@ function ReservationSystem(props){
         <Step2 currentStep={currentStep} openHours={openHours} handleTimeClick={handleTimeClick} wasTimeSelected={wasTimeSelected} bookings={bookings} time={time} showDatePicker={showDatePicker}></Step2>
 
 
-        <Step3 currentStep={currentStep} nameCustomer={nameCustomer} setNameCustomer={setNameCustomer} numberCustomer={numberCustomer} setNumberCustomer={setNumberCustomer}></Step3>
+        <Step3 currentStep={currentStep} addReservation={addReservation} nameCustomer={nameCustomer} setNameCustomer={setNameCustomer} numberCustomer={numberCustomer} setNumberCustomer={setNumberCustomer}></Step3>
 
         <Step4 currentStep={currentStep}></Step4>
         {
             (currentStep > 1 && currentStep < 4) &&
             <button onClick={goBack}>Back</button>
         }
-        {
-            currentStep === 3 &&
-            <button id="finish" className="finish" onClick={addReservation}>Add reservation</button>
-        }
-
         {
             showPopupTime === true &&
             <PopUp title="Selected time" text={time} closePopup={() => setShowPopupTime(false)}></PopUp>

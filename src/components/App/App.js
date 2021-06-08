@@ -17,6 +17,10 @@ import {
 } from "react-router-dom";
 
 import { AnimatedSwitch } from 'react-router-transition';
+import { fab } from '@fortawesome/free-brands-svg-icons'
+import { library } from '@fortawesome/fontawesome-svg-core'
+
+library.add(fab)
 
 
 function App() {

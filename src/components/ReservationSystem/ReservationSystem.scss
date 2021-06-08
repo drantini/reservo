@@ -23,6 +23,12 @@
 }
 .finish{
     background-color: green;
+    color:white;
+    transition: linear 0.4s;
+}
+.finish:disabled{
+    background-color: grey;
+    color: rgb(66, 66, 66);
 }
 select{
     border-radius: 10px;
