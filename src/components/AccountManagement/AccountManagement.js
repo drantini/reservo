@@ -37,7 +37,7 @@ function Row(props){
             <td>{props.number}</td>
             <td>{props.date}</td>
             <td>{props.room}</td>
-            {isExpired ? <span style={{color: 'red'}}>Expired</span> : isCurrently ? <span style={{color: 'green'}}>Currently</span> : <td onClick={cancelReservation} style={{cursor: 'pointer', textDecoration: 'underline'}}>Cancel</td>}
+            {isExpired ? <td style={{color: 'red'}}>Expired</td> : isCurrently ? <td style={{color: 'green'}}>Currently</td> : <td onClick={cancelReservation} style={{cursor: 'pointer', textDecoration: 'underline'}}>Cancel</td>}
         </tr>
     )
 }

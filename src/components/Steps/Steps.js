@@ -45,12 +45,10 @@ function Step1(props){
 }
 export default Step1
 function Step2(props){
-    if (props.currentStep != 2){
+    if (props.currentStep != 2 || props.openHours.length < 1){
         return null;
     }
-    const openHours = [
-        [9.5, 21]
-    ];
+    
 
     return(
         <motion.div initial={{ opacity: 0}} animate={{ opacity: 1 }}
@@ -60,18 +58,16 @@ function Step2(props){
           damping: 20
         }}>
 
-        
         <span className="step" id="step">When?</span>
-            <TimeCalendar className="calendar"
-            clickable
-            timeSlot = {30}
-            onTimeClick = {props.handleTimeClick}
-            openHours = {openHours}
-            bookings = {props.bookings}
-            disableHistory = {true}
-            />
-
-        
+        <TimeCalendar className="calendar"
+        clickable
+        timeSlot = {30}
+        onTimeClick = {props.handleTimeClick}
+        openHours = {[props.openHours]}
+        bookings = {props.bookings}
+        disableHistory = {true}
+        />
+                
         </motion.div>
     )
 }

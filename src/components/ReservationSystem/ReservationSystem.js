@@ -18,6 +18,7 @@ function ReservationSystem(props){
     const [showPopupAdded, setShowPopupAdded] = useState(false);
     const [bookings, setBookings] = useState([]);
     const [bookingsRef, setBookingsRef] = useState(firestore().collection('stations/0/bookings'));
+    const [openHours, setOpenHours] = useState([]);
     const roomsRef = firestore().collection('stations').orderBy("name")
     const history = useHistory();
 
@@ -90,6 +91,7 @@ function ReservationSystem(props){
         firestore().collection('stations').where('name', '==', roomName).get().then((querySnapshot) => {
             querySnapshot.forEach((doc) => {
                 setBookingsRef(firestore().collection('stations/' + doc.id + '/bookings'))
+                setOpenHours(doc.data().openHours)
                 firestore().collection('stations/' + doc.id + '/bookings').get().then((querySnapshot) => {
                     querySnapshot.forEach((doc) => {
                         if (bookings.indexOf(doc.id) != -1) return;
@@ -106,6 +108,7 @@ function ReservationSystem(props){
             });
         
         });
+
         goNext();
     }
 
@@ -128,7 +131,8 @@ function ReservationSystem(props){
 
         <Step1 currentStep={currentStep} handleRoomChange={handleRoomChange} roomsRef={roomsRef}></Step1>
 
-        <Step2 currentStep={currentStep} handleTimeClick={handleTimeClick} wasTimeSelected={wasTimeSelected} bookings={bookings} time={time} showDatePicker={showDatePicker}></Step2>
+        <Step2 currentStep={currentStep} openHours={openHours} handleTimeClick={handleTimeClick} wasTimeSelected={wasTimeSelected} bookings={bookings} time={time} showDatePicker={showDatePicker}></Step2>
+
 
         <Step3 currentStep={currentStep} nameCustomer={nameCustomer} setNameCustomer={setNameCustomer} numberCustomer={numberCustomer} setNumberCustomer={setNumberCustomer}></Step3>
 

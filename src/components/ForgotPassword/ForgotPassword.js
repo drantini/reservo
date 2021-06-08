@@ -1,6 +1,7 @@
 
 import { auth, firestore } from '../../helpers/firebase'
 import { useState } from "react";
+
 function ForgotPassword(props){
     const [email, setEmail] = useState('');
     const resetPassword = () => {

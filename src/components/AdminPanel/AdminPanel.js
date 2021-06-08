@@ -1,6 +1,7 @@
 import './AdminPanel.css'
 import React, {useEffect, useState} from 'react'
 import Loader from "react-loader-spinner";
+import {motion, AnimatePresence} from "framer-motion";
 
 import InputPopUp from '../InputPopUp/InputPopUp';
 
@@ -16,15 +17,27 @@ function Loading(props){
             timeout={93000}>
 
             </Loader>
-            <span>{props.text}</span>
         </div>
+    )
+}
+function OptionsMenu(props){
+    console.log("here")
+    return(
+        <motion.div id="options" className="options"         
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        exit={{ opacity: 0 }}>
+            <span onClick={props.removeRoom} className="option">• Edit open hours</span><br/><br/>
+            <span onClick={props.removeRoom} className="option" style={{color: "red"}}>• Remove room</span><br/><br/>
+
+        </motion.div>
     )
 }
 
 function Room(props){
     const [bookingsQuery, setBookingsQuery] = useState();
     const [showLoading, setShowLoading] = useState(false);
-
+    const [showMenu, setShowMenu] = useState(false);
     const [bookingReference, setBookingReference] = useState();
     const [roomId, setRoomId] = useState("0");
     const getBookings = () => {
@@ -54,16 +67,23 @@ function Room(props){
         })
     }
 
+
     const [bookings] = useCollectionData(bookingsQuery);
     return(
         showLoading ? <Loading text="Removing room... This might take a while." type="room"></Loading> :
         <div className="room">
-            <button className="cancel-room" onClick={removeRoom}>X</button>
+
+            <div className="options-room" onClick={() => setShowMenu(!showMenu)}></div>
 
             <span>{props.name}</span>
+            <AnimatePresence>
+            {showMenu && <OptionsMenu removeRoom={removeRoom}></OptionsMenu>}
+            </AnimatePresence>
             {bookings && bookings.map(booking => <Reservation key={roomId + booking.start_time} bookingRef={bookingReference} name={booking.customer_name} phone_number={booking.phone_number} start={booking.start_time}/>)}
 
         </div>
+
+
     )
 }
 

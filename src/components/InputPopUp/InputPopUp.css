@@ -22,7 +22,7 @@
   }
 .confirm{
     color: black;
-    background-color: rgb(33, 187, 33);
+    background-color: white;
 
 }
 .confirm:hover{
@@ -31,11 +31,12 @@
     color:white;
 }
 .cancel-add{
+    background-color: white;
     color: black;
 }
 .cancel-add:hover{
     cursor: pointer;
-    background-color: rgb(148, 3, 3);
+    background-color: #2e2e2e;
     color:white;
 }
 .name-room{
