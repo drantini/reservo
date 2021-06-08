@@ -21,7 +21,6 @@ function Loading(props){
     )
 }
 function OptionsMenu(props){
-    console.log("here")
     return(
         <motion.div id="options" className="options"         
         initial={{ opacity: 0 }}
@@ -117,9 +116,6 @@ function Reservation(props){
                 alert("Error occured. (" + error + ")");
         })
     }
-    const sumbitReservation = () => {
-        setResolved(true)
-    }
 
     useEffect(() => {
         //Happened more than 30 minutes ago, automatically remove
@@ -149,15 +145,9 @@ function Reservation(props){
                     currently == true &&
                     <span id="currently" className="currently">RIGHT NOW</span>
                 }
-                <span>{props.name}</span><br/>
-                <span>{props.phone_number}</span><br/>
-                <span>{time}</span><br/>
-                <label>
-                    Paid
-                <input type="number" min="1" step="any" placeholder="3.50" value={paid} onChange={e => setPaid(parseFloat(e.target.value))}></input>
-                $
-                </label>
-                <button onClick={sumbitReservation}>Submit</button>
+                <span>{props.name}</span>
+                <span>{props.phone_number}</span>
+                <span>{time}</span>
             </div>
             }
         </div>

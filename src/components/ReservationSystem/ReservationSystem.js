@@ -60,7 +60,6 @@ function ReservationSystem(props){
 
         bookingsRef.get().then((querySnapshot) => {
             querySnapshot.forEach((doc) => {
-                console.log(doc.data())
                 if (doc.data().start_time.seconds === timestamp){
                     return alert('Oops! Seems like someone already reserved for this time. :(');
                 }

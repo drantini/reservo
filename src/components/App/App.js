@@ -28,7 +28,7 @@ function App() {
     document.getElementById('sidenav').style.width = "0";
   }
   const openNav = () =>{
-    document.getElementById('sidenav').style.width = "250px";
+    document.getElementById('sidenav').style.width = "min(250px, 50vw)";
   }
   useEffect(() => {
     if (user == null) return;
@@ -48,11 +48,11 @@ function App() {
           <div id="sidenav" className="sidenav">
             <a href="javascript:void(0)" class="closebtn" onClick={closeNav}>&times;</a>
             <br/>
-            <Link to="/">Home</Link>
+            <Link to="/" onClick={() => closeNav()}>Home</Link>
             <br/>
-            {isAdmin ? <Link to="/admin">Admin</Link> : null}
+            {isAdmin ? <Link to="/admin" onClick={() => closeNav()}>Admin</Link> : null}
             <br/>
-            {user? <Link to="/account">Account</Link> : <Link to="/signin">Sign in</Link>}
+            {user? <Link to="/account" onClick={() => closeNav()}>Account</Link> : <Link to="/signin" onClick={() => closeNav()}>Sign in</Link>}
 
           </div>
           <div class="container" onClick={openNav}>
