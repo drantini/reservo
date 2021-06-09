@@ -5,11 +5,13 @@ import { useHistory } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 
 import { useState, useEffect } from 'react';
+import ReCaptcha from '../ReCaptcha/ReCaptcha';
 import { auth, firestore, firebaseBuffer } from '../../helpers/firebase'
 
 function SignIn(props) {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+    const [allowSubmit, setAllowSubmit] = useState(false);
     const history = useHistory();
 
     const SignIn = e => {
@@ -91,8 +93,9 @@ function SignIn(props) {
                 <input type="password" value={password} onChange={e => setPassword(e.target.value)} onKeyDown={keyLogin}/>
                 </label>
                 <br></br>
-                <button onClick={SignUp}>Sign up</button>
-                <button onClick={SignIn}>Sign in</button><br/>
+                <ReCaptcha setAllowSubmit={setAllowSubmit}></ReCaptcha>
+                <button onClick={SignUp} disabled={!allowSubmit}>Sign up</button>
+                <button onClick={SignIn} disabled={!allowSubmit}>Sign in</button><br/>
                 <a className="forgot" onClick={() => history.push("/forgot")}>Forgot password?</a>
                 <div className="separator">OR</div>
                 <button onClick={SignInWithGoogle}><FontAwesomeIcon icon={['fab', 'google']} /> Sign in with Google</button><br/>

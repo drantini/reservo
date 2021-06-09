@@ -24,9 +24,11 @@
 .finish{
     background-color: green;
     color:white;
-    transition: linear 0.4s;
+    transition: linear 0.3s;
 }
-.finish:disabled{
+
+button:disabled{
+    cursor: not-allowed;
     background-color: grey;
     color: rgb(66, 66, 66);
 }
