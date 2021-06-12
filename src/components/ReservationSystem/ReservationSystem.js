@@ -64,11 +64,11 @@ function ReservationSystem(props){
                     return alert('Oops! Seems like someone already reserved for this time. :(');
                 }
             });
-
-            bookingsRef.add(add_data).then((docRef) => { 
+            bookingsRef.add(add_data).then(() => {
                 goNext();
+            }).catch(error => {
+                alert(error)
             })
-
         })
 
     }

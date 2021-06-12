@@ -19,7 +19,6 @@ function SignIn(props) {
         .signInWithEmailAndPassword(email, password)
         .then(res => {
           history.push("/");
-          console.log(`Logged in: ${res}`)
         }).catch(e => {
             alert(e)
         })
