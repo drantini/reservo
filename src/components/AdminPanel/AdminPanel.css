@@ -71,7 +71,12 @@
     transition: linear 0.2s;
 
 }
+.options-room:hover{
+    color:rgb(184, 184, 184);
+}
 .options{
+    position: absolute;
+    z-index: 150;
     background: #414142;
     border: 1px solid rgb(87, 86, 86);
     font-size: 12px;
@@ -79,8 +84,8 @@
     padding: 10px 10px;
     text-align: left;
     margin-top: 10px;
-    max-width: fit-content;
-    min-height: 100px;
+    overflow: hidden;
+    white-space: nowrap;
     color: white;
 }
 .option:hover{

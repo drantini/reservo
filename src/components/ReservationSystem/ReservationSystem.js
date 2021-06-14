@@ -1,9 +1,8 @@
 import './ReservationSystem.scss'
 import React, {Fragment, useEffect, useState} from 'react'
-
 import PopUp from '../PopUp/PopUp';
 
-import { auth, firestore } from '../../helpers/firebase'
+import { firestore } from '../../helpers/firebase'
 import {Step1, Step2, Step3, Step4}  from '../Steps/Steps'
 import { useHistory } from 'react-router-dom';
 
@@ -133,7 +132,7 @@ function ReservationSystem(props){
         <Step2 currentStep={currentStep} openHours={openHours} handleTimeClick={handleTimeClick} wasTimeSelected={wasTimeSelected} bookings={bookings} time={time} showDatePicker={showDatePicker}></Step2>
 
 
-        <Step3 currentStep={currentStep} addReservation={addReservation} nameCustomer={nameCustomer} setNameCustomer={setNameCustomer} numberCustomer={numberCustomer} setNumberCustomer={setNumberCustomer}></Step3>
+        <Step3 currentStep={currentStep} user={props.user} addReservation={addReservation} nameCustomer={nameCustomer} setNameCustomer={setNameCustomer} numberCustomer={numberCustomer} setNumberCustomer={setNumberCustomer}></Step3>
 
         <Step4 currentStep={currentStep}></Step4>
         {

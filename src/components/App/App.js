@@ -25,6 +25,7 @@ library.add(fab)
 
 function App() {
   const [user] = useAuthState(auth);
+  const [wasAdminChecked, setWasAdminChecked] = useState(false);
   const [isAdmin, setIsAdmin] = useState(false);
   useTitle('Reservo')
 
@@ -36,10 +37,12 @@ function App() {
   }
   useEffect(() => {
     if (user == null) return;
+
+    if (wasAdminChecked == true) return;
     let userRef = firestore().collection('users').doc(user.uid)
     userRef.get().then(user => {
       setIsAdmin(user.data().admin);
-    
+      setWasAdminChecked(true);
     })
   })
 

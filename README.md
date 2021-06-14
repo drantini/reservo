@@ -6,7 +6,7 @@ Reservo is fully working reservation system for many things like restaurants, la
 
 ## What does it include?
 
-Reservo includes clean and intuitive reservation system with great admin panel with money tracking.
+Reservo includes clean and intuitive reservation system with easy-to-use admin panel.
 
 ## How to setup?
 

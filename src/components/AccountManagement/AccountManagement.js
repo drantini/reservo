@@ -43,6 +43,8 @@ function Row(props){
 }
 
 function AccountManagement(props){
+    const [fullName, setFullName] = useState("");
+    const [phoneNumber, setPhoneNumber] = useState("");
     const [userReservations, setUserReservations] = useState([]);
     const history = useHistory();
 
@@ -84,7 +86,7 @@ function AccountManagement(props){
 
             }
             setTimeout(() => {
-
+                //TODO: Remove setTimeout, really ineffective and ghetto
                 setUserReservations(loadedReservations)
 
             }, 750)
@@ -94,12 +96,28 @@ function AccountManagement(props){
 
 
     }
+    const updatePersonalInformation = () => {
+        firestore().collection(`users/${props.user.uid}/private`).doc('information').set({
+            full_name: fullName,
+            phone_number: phoneNumber
+        }).then(() => {
+            alert("Updated personal information successfully.");
+        }).catch((error) => {
+            alert(error);
+        })
+    }
     useEffect(() => {
         setTimeout(() => {
             if (props.user == null){
                 history.push("/signin")
             }
         }, 1000)
+        firestore().collection(`users/${props.user.uid}/private`).doc('information').get().then((doc) => {
+            if (doc.exists){
+                setFullName(doc.data().full_name);
+                setPhoneNumber(doc.data().phone_number);
+            }
+        })
         fetchReservations();
     }, [])
     if (props.user == null){
@@ -108,6 +126,18 @@ function AccountManagement(props){
     return(
         <div>
             <button className="signin-btn" onClick={SignOut}>Sign out</button>
+            <div className="personal-info">
+                <span>Personal information</span>
+                <small>(Fill in this information to speed up reservation process.)</small><br/>
+                <span>Full name</span>
+                <input type="text" value={fullName} onChange={e => setFullName(e.target.value)}></input>
+
+                <span>Phone number</span>
+                <input type="text" value={phoneNumber} onChange={e => setPhoneNumber(e.target.value)}></input>
+                
+                <button onClick={updatePersonalInformation}>Update</button>
+            </div>
+            <span className="text-medium">Your reservations</span>
             <table>
                 <thead>
                 <tr>

@@ -1,9 +1,23 @@
 table, th, td {
   padding:10px;
-  font-size: min(3vw, 22px);
+  font-size: min(3vw, 19px);
 
   max-width: 100vw;
   border: 1px solid rgb(204, 204, 204);
+}
+.text-medium {
+  font-size: min(3vw, 21px);
+
+}
+.personal-info{
+  padding: 10px 10px;
+  margin-bottom: 25px;
+  border-radius: 10px;
+  background-color: rgb(48, 48, 48);
+  display:flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content:center;
 }
 td{
   margin-bottom: 5px;

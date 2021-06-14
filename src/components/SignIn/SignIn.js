@@ -28,7 +28,6 @@ function SignIn(props) {
         let provider = new firebaseBuffer.auth.GoogleAuthProvider();
         auth.signInWithPopup(provider)
         .then((result) => {
-            console.log(result.user)
             let userRef = firestore().collection('users').doc(result.user.uid)
             userRef.set({
                 admin: false,
@@ -41,7 +40,6 @@ function SignIn(props) {
         let provider = new firebaseBuffer.auth.FacebookAuthProvider();
         auth.signInWithPopup(provider)
         .then((result) => {
-            console.log(result.user)
             let userRef = firestore().collection('users').doc(result.user.uid)
             userRef.set({
                 admin: false,
