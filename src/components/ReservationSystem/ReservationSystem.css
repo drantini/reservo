@@ -1,25 +1,5 @@
 .calendar{
-    min-width: #{"min(400px, 90vw)"};
-    .body{
-        .row{
-
-            .selected{
-                color: rgb(21, 134, 187);
-            }
-        }
-    }
-
-   .timeSelector{
-
-       margin-left: 0px;
-       .optionHolder{
-           .col:focus{
-                color:rgb(21, 134, 187);
-           }
-       }
-        min-height: 58px
-    }
- 
+    width: min(500px, 90vw);
 }
 .finish{
     background-color: green;

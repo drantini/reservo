@@ -4,8 +4,8 @@ import {motion} from "framer-motion";
 
 function Loading(props){
     return(
-        <div id="reservation" className="reservation">
-            <Loader type="Puff" color="#00BFFF"
+        <div>
+            <Loader type={props.type != null ? props.type : "Puff"} color="#00BFFF"
             height={90}
             width={90}
             timeout={93000}>

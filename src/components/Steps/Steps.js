@@ -1,5 +1,6 @@
 import { useState, useEffect} from 'react'
 import TimeCalendar from 'react-timecalendar';
+import BookingSelector from 'react-booking-selector';
 import './Steps.css'
 import { motion } from 'framer-motion';
 import ReCaptcha from '../ReCaptcha/ReCaptcha'
@@ -47,7 +48,7 @@ function Step1(props){
 }
 export default Step1
 function Step2(props){
-    if (props.currentStep != 2 || props.openHours.length < 1){
+    if (props.currentStep != 2 || props.openHours.length < 1 || props.bookingsParsed == false){
         return null;
     }
     
@@ -61,14 +62,12 @@ function Step2(props){
         }}>
 
         <span className="step" id="step">When?</span>
-        <TimeCalendar className="calendar"
-        clickable
-        timeSlot = {30}
-        onTimeClick = {props.handleTimeClick}
-        openHours = {[props.openHours]}
-        bookings = {props.bookings}
-        disableHistory = {true}
-        />
+        <BookingSelector className="calendar"
+        selection = {props.time}
+        minTime = {props.openHours[0]}
+        maxTime = {props.openHours[1]}
+        blocked = {props.bookings}
+        onChange = {props.handleTimeClick}/>
                 
         </motion.div>
     )
@@ -77,6 +76,7 @@ function Step2(props){
 function Step3(props){
     const [allowSubmit, setAllowSubmit] = useState(false);
     useEffect(() => {
+        if (props.user == null) return;
         firestore().collection(`users/${props.user.uid}/private`).doc('information').get().then((doc) => {
             if (doc.exists){
                 props.setNameCustomer(doc.data().full_name);

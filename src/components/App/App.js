@@ -1,4 +1,5 @@
 import './App.css';
+import {Loading} from '../Reservation/Reservation';
 import AdminPanel from '../AdminPanel/AdminPanel'
 import SignIn from '../SignIn/SignIn'
 import ForgotPassword from '../ForgotPassword/ForgotPassword'
@@ -24,7 +25,7 @@ library.add(fab)
 
 
 function App() {
-  const [user] = useAuthState(auth);
+  const [user, loading] = useAuthState(auth);
   const [wasAdminChecked, setWasAdminChecked] = useState(false);
   const [isAdmin, setIsAdmin] = useState(false);
   useTitle('Reservo')
@@ -47,9 +48,11 @@ function App() {
   })
 
   return (
+    
     <div className="App">
 
       <header className="App-header">
+        {loading ? <Loading type="TailSpin"></Loading> :
         <Router>
         <div>
           <div id="sidenav" className="sidenav">
@@ -94,7 +97,7 @@ function App() {
           </AnimatedSwitch>
 
         </div>
-        </Router>
+        </Router>}
         
       </header>
     </div>

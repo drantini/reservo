@@ -1,4 +1,4 @@
-import './ReservationSystem.scss'
+import './ReservationSystem.css'
 import React, {Fragment, useEffect, useState} from 'react'
 import PopUp from '../PopUp/PopUp';
 
@@ -8,14 +8,12 @@ import { useHistory } from 'react-router-dom';
 
 
 function ReservationSystem(props){
-    const [showDatePicker, setShowDatePicker] = useState(false);
-    const [wasTimeSelected, setWasTimeSelected] = useState(false);
-    const [reservationDate, setReservationDate] = useState(new Date());
+    const [reservationDate, setReservationDate] = useState([]);
     const [nameCustomer, setNameCustomer] = useState("");
     const [numberCustomer, setNumberCustomer] = useState("");
-    const [showPopupTime, setShowPopupTime] = useState(false);
     const [showPopupAdded, setShowPopupAdded] = useState(false);
     const [bookings, setBookings] = useState([]);
+    const [bookingsParsed, setBookingsParsed] = useState(false);
     const [bookingsRef, setBookingsRef] = useState(firestore().collection('stations/0/bookings'));
     const [openHours, setOpenHours] = useState([]);
     const roomsRef = firestore().collection('stations').orderBy("name")
@@ -32,7 +30,7 @@ function ReservationSystem(props){
         if (/^\d{10}$/.test(numberCustomer) === false){
             return alert("Incorrect phone number. (Correct example: 0944111985)")
         }
-        if (wasTimeSelected === false){
+        if (reservationDate.length == 0){
             return alert("Please select date and time.")
         }
         if (nameCustomer.length <= 0){
@@ -41,50 +39,50 @@ function ReservationSystem(props){
         if (numberCustomer.length <= 0){
             return alert("Please enter your phone number.")
         }
-        var end = new Date(reservationDate);
-        end.setMinutes(end.getMinutes() + 30)
-        let add_data = {
-            start_time: reservationDate,
-            end_time: end,
-            customer_name: nameCustomer,
-            phone_number: numberCustomer
-        };
-        if (props.user){
-            add_data.uid = props.user.uid
-        }
-        //check if exists
-        let found_counter = 0;
-        let timestamp = Math.round((reservationDate).getTime() / 1000);
+
+        reservationDate.forEach((reservationTime) => {
+            var end = new Date(reservationTime);
+            end.setMinutes(end.getMinutes() + 30)
+            let add_data = {
+                start_time: reservationTime,
+                end_time: end,
+                customer_name: nameCustomer,
+                phone_number: numberCustomer
+            };
+            if (props.user){
+                add_data.uid = props.user.uid
+            }
+            let timestamp = Math.round((reservationTime).getTime() / 1000);
         
 
-        bookingsRef.get().then((querySnapshot) => {
-            querySnapshot.forEach((doc) => {
-                if (doc.data().start_time.seconds === timestamp){
-                    return alert('Oops! Seems like someone already reserved for this time. :(');
-                }
-            });
-            bookingsRef.add(add_data).then(() => {
-                goNext();
-            }).catch(error => {
-                alert(error)
+            bookingsRef.get().then((querySnapshot) => {
+                querySnapshot.forEach((doc) => {
+                    if (doc.data().start_time.seconds === timestamp){
+                        return alert('Oops! Seems like someone already reserved for this time. :(');
+                    }
+                });
+                bookingsRef.add(add_data).then(() => {
+                    goNext();
+                }).catch(error => {
+                    alert(error)
+                })
             })
         })
 
+
     }
 
-    let time = new Date(reservationDate).toLocaleString()
+
 
     const handleTimeClick = (time) =>{
+        console.log(time)
         setReservationDate(time);
-        setWasTimeSelected(true);
-        setShowDatePicker(false);//close date picker
-        setShowPopupTime(true);
-        goNext()
+
     }
     const handleRoomChange = (event) => {
         const roomName = event.target.value;
         setBookings([])
-        
+        setBookingsParsed(false);
 
         firestore().collection('stations').where('name', '==', roomName).get().then((querySnapshot) => {
             querySnapshot.forEach((doc) => {
@@ -92,16 +90,15 @@ function ReservationSystem(props){
                 setOpenHours(doc.data().openHours)
                 firestore().collection('stations/' + doc.id + '/bookings').get().then((querySnapshot) => {
                     querySnapshot.forEach((doc) => {
-                        if (bookings.indexOf(doc.id) != -1) return;
-                        setBookings([
-                            ...bookings,
-                            {
-                                id: doc.id,
-                                start_time: new Date(doc.data().start_time.seconds * 1000),
-                                end_time: new Date(doc.data().end_time.seconds * 1000)
-                            }
+                        setBookings(prevState => [
+                            ...prevState,
+                            new Date(doc.data().start_time.seconds * 1000),
+
                         ])
                     })
+                    setBookingsParsed(true);
+
+
                 })
             });
         
@@ -129,7 +126,7 @@ function ReservationSystem(props){
 
         <Step1 currentStep={currentStep} handleRoomChange={handleRoomChange} roomsRef={roomsRef}></Step1>
 
-        <Step2 currentStep={currentStep} openHours={openHours} handleTimeClick={handleTimeClick} wasTimeSelected={wasTimeSelected} bookings={bookings} time={time} showDatePicker={showDatePicker}></Step2>
+        <Step2 currentStep={currentStep} bookingsParsed={bookingsParsed} openHours={openHours} handleTimeClick={handleTimeClick} bookings={bookings} time={reservationDate}></Step2>
 
 
         <Step3 currentStep={currentStep} user={props.user} addReservation={addReservation} nameCustomer={nameCustomer} setNameCustomer={setNameCustomer} numberCustomer={numberCustomer} setNumberCustomer={setNumberCustomer}></Step3>
@@ -140,9 +137,10 @@ function ReservationSystem(props){
             <button onClick={goBack}>Back</button>
         }
         {
-            showPopupTime === true &&
-            <PopUp title="Selected time" text={time} closePopup={() => setShowPopupTime(false)}></PopUp>
+            (currentStep == 2 && reservationDate.length > 0) &&
+            <button onClick={goNext}>Next</button>
         }
+
         {
             showPopupAdded === true &&
             <PopUp title="Added reservation" text="Successfully added reservation." closePopup={() => setShowPopupAdded(false)}></PopUp>
