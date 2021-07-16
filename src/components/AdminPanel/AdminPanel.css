@@ -90,6 +90,7 @@
 }
 .option:hover{
     cursor:pointer;
+    text-decoration: underline;
 }
 .options-room:after{
     content: '•••';
@@ -103,13 +104,34 @@
 .cancel:hover, .options-room:hover{
     cursor: pointer;
 }
+.option {
+    display: inline-block;
+    position: relative;
+    
+}
+  
+.option:after {
+    content: '';
+    position: absolute;
+    width: 100%;
+    transform: scaleX(0);
+    height: 2px;
+    bottom: 0;
+    left: 0;
+    background-color: currentColor;
+    transform-origin: bottom right;
+    transition: transform 0.25s ease-out;
+}
+  
+.option:hover:after {
+    transform: scaleX(1);
+    transform-origin: bottom left;
+}
 .cancel:hover{
     background: transparent;
     color:black;
 }
-button{
-    margin-left: 10px;
-}
+
 span{
     margin-bottom: 5px;
 }
@@ -119,15 +141,18 @@ input{
     border-bottom: 2px solid gray;
     color: white;
     max-width: 200px;
-
+    margin-top: 5px;
     margin-bottom: 10px; 
     -moz-appearance: textfield;
     text-align: center;
     font-size: 17px;
+    transition: linear 0.2s;
 }
 input[type="number"]{
     max-width: 80px;
 }
 input:focus, textarea:focus {
     outline: none;
+    border-bottom: 2px solid white;
+    border-radius: 2px;
 }

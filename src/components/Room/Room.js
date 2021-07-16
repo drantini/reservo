@@ -15,7 +15,7 @@ function OptionsMenu(props){
         exit={{ opacity: 0, width: "0", height: "0" }}
         transition={{ ease: "easeOut", duration: 0.3 }}
         >
-            <motion.span onClick={props.editHours} className="option" whileHover={{ scale: 1.1}}>• Edit open hours</motion.span><br/><br/>
+            <motion.span onClick={props.editHours} className="option">• Edit open hours</motion.span><br/><br/>
             <motion.span onClick={props.removeRoom} className="option" style={{color: "red"}}>• Remove room</motion.span>
 
         </motion.div>
@@ -32,6 +32,7 @@ function Room(props){
     const [open, setOpenHour] = useState(0);
     const [close, setCloseHour] = useState(0);
     const getBookings = () => {
+        setShowLoading(true)
         firestore().collection('stations').where('name', '==', props.name).get().then((querySnapshot) => {
             querySnapshot.forEach((doc) => {
                 setOpenHour(doc.data().openHours[0])
@@ -39,10 +40,15 @@ function Room(props){
                 
 
                 setRoomId(doc.id + "");
+                let current = Date.now();
+                current += 86400000;
+                let older = Date.now();
+                older -= 1800000;
+                var checkDate = firestore.Timestamp.fromDate(new Date(current));
                 setBookingReference(firestore().collection('stations/' + doc.id + '/bookings'));
-                return setBookingsQuery(firestore().collection('stations/' + doc.id + '/bookings').orderBy('start_time').limit(10))
+                return setBookingsQuery(firestore().collection('stations/' + doc.id + '/bookings').orderBy('start_time').where("start_time", "<=", checkDate).where("start_time", ">", older))
             });
-        
+            setShowLoading(false);
         });
     }
     useEffect(() => {
@@ -83,7 +89,7 @@ function Room(props){
 
     const [bookings] = useCollectionData(bookingsQuery);
     return(
-        showLoading ? <Loading text="Removing room... This might take a while." type="room"></Loading> :
+        showLoading ? <Loading text="Please wait..." className="room" type="TailSpin"></Loading> :
         <motion.div className="room"
         initial={{ opacity: 0, width: "0", height: "0" }}
         animate={{ opacity: 1,  height: "auto", width: "auto" }}

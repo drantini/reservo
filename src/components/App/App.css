@@ -60,6 +60,13 @@ button{
   min-width: 60px;
   padding: 5px 5px;
   font-size:18px;
+  border-radius: 5px;
+  width: auto;
+  margin-top: 10px;
+  margin-right: 10px;
+  margin-bottom: 5px;
+  margin-left: 10px;
+
 }
 button:hover{
   background: #282c34;

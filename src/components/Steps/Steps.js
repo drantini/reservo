@@ -1,10 +1,11 @@
 import { useState, useEffect} from 'react'
 import TimeCalendar from 'react-timecalendar';
 import BookingSelector from 'react-booking-selector';
-import './Steps.css'
+import './Steps.css';
 import { motion } from 'framer-motion';
-import ReCaptcha from '../ReCaptcha/ReCaptcha'
-import { auth, firebaseBuffer, firestore } from '../../helpers/firebase'
+import ReCaptcha from '../ReCaptcha/ReCaptcha';
+import { auth, firebaseBuffer, firestore } from '../../helpers/firebase';
+
 
 function Step1(props){
     const [stationNames, setStationNames] = useState([]);
@@ -62,12 +63,16 @@ function Step2(props){
         }}>
 
         <span className="step" id="step">When?</span>
-        <BookingSelector className="calendar"
+        <div className="calendar">
+        <BookingSelector
         selection = {props.time}
+        margin="4"
         minTime = {props.openHours[0]}
         maxTime = {props.openHours[1]}
         blocked = {props.bookings}
         onChange = {props.handleTimeClick}/>
+        </div>
+
                 
         </motion.div>
     )
@@ -87,8 +92,13 @@ function Step3(props){
     if (props.currentStep != 3){
         return null;
     }
+    const reservations = props.reservation;
     return(
         <div>
+        <span>Date and Time of reservation:</span>
+        <ul>
+        {reservations.map((time) => <li key={time}>{time.toLocaleString()}</li>)}
+        </ul>
         <label>
         Full name<br/>
         <input type="text" value={props.nameCustomer} onChange={e => props.setNameCustomer(e.target.value)}/>
@@ -112,11 +122,12 @@ function Step4(props){
     }
     return(
         <div>
-        <svg class="checkmark" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 52 52">
-            <circle class="checkmark__circle" cx="26" cy="26" r="25" fill="none"/>
-            <path class="checkmark__check" fill="none" d="M14.1 27.2l7.1 7.2 16.7-16.8"/>
+        <svg className="checkmark" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 52 52">
+            <circle className="checkmark__circle" cx="26" cy="26" r="25" fill="none"/>
+            <path className="checkmark__check" fill="none" d="M14.1 27.2l7.1 7.2 16.7-16.8"/>
         </svg>
-        <span className="step" id="step">Successfully added your reservation.</span>
+        <span className="step" id="step">Successfully added your reservation.</span><br/>
+        <small>Reservation IDs: <br/>{props.ids.join(", ")}</small>
         </div>
     )
 }

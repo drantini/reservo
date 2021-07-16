@@ -23,7 +23,7 @@ function Reservation(props){
     const bookingsRef = props.bookingRef;
     let time = new Date(props.start.seconds * 1000).toLocaleString()
     const setReservationId = () => {
-         bookingsRef.get().then((querysnap) => {
+        bookingsRef.get().then((querysnap) => {
             querysnap.forEach((doc) => {
                 if(doc.data().start_time.seconds == props.start.seconds){
                     return setBookingId(doc.id)
@@ -31,6 +31,8 @@ function Reservation(props){
             });
         })
     }
+
+    
     const cancelReservation = (show) => {
         setShowLoading(true);
         bookingsRef.doc(bookingId).delete().then(() => {
@@ -44,9 +46,7 @@ function Reservation(props){
                 alert("Error occured. (" + error + ")");
         })
     }
-
     useEffect(() => {
-        //Happened more than 30 minutes ago, automatically hide
         if (new Date((props.start.seconds * 1000)+1800000) < Date.now() && bookingsRef && bookingId){
             //cancelReservation(false);
             setResolved(true);
@@ -54,9 +54,14 @@ function Reservation(props){
         else if (new Date(props.start.seconds * 1000) < Date.now()){
             setCurrently(true);
         }    
-        setReservationId();
+        setShowLoading(false)
+    }, [bookingId])
+    useEffect(() => {
+        setShowLoading(true)
+        setReservationId()
+    }, [])
 
-    })
+
 
     return(
         resolved == false &&
@@ -65,7 +70,7 @@ function Reservation(props){
         animate={{ opacity: 1,  height: "auto", width: "auto" }}
         exit={{ opacity: 0, width: "0", height: "0" }}>
             {
-                showLoading ? <Loading text="Removing... This might take a while." type="reservation"></Loading> :
+                showLoading ? <Loading text="Removing... This might take a while." className="reservation" type="TailSpin"></Loading> :
             <div id="reservation" className="reservation">
 
                 {

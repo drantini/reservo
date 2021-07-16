@@ -1,24 +1,26 @@
-import './ReservationSystem.css'
-import React, {Fragment, useEffect, useState} from 'react'
+import './ReservationSystem.css';
+import React, {Fragment, useEffect, useState} from 'react';
 import PopUp from '../PopUp/PopUp';
 
-import { firestore } from '../../helpers/firebase'
-import {Step1, Step2, Step3, Step4}  from '../Steps/Steps'
+import { firestore } from '../../helpers/firebase';
+import {Step1, Step2, Step3, Step4}  from '../Steps/Steps';
 import { useHistory } from 'react-router-dom';
 
+function isInArray(array, value) {
+    return !!array.find(item => {return item.getTime() == value.getTime()});
+}
 
 function ReservationSystem(props){
     const [reservationDate, setReservationDate] = useState([]);
     const [nameCustomer, setNameCustomer] = useState("");
     const [numberCustomer, setNumberCustomer] = useState("");
-    const [showPopupAdded, setShowPopupAdded] = useState(false);
     const [bookings, setBookings] = useState([]);
     const [bookingsParsed, setBookingsParsed] = useState(false);
     const [bookingsRef, setBookingsRef] = useState(firestore().collection('stations/0/bookings'));
     const [openHours, setOpenHours] = useState([]);
     const roomsRef = firestore().collection('stations').orderBy("name")
+    const [reservationIds, setReservationIds] = useState([]);
     const history = useHistory();
-
 
     const [currentStep, setCurrentStep] = useState(1);
 
@@ -61,13 +63,25 @@ function ReservationSystem(props){
                         return alert('Oops! Seems like someone already reserved for this time. :(');
                     }
                 });
-                bookingsRef.add(add_data).then(() => {
-                    goNext();
+                bookingsRef.add(add_data).then((docRef) => {
+                    setReservationIds(prevState => [
+                        ...prevState,
+                        docRef.id,
+
+                    ])
                 }).catch(error => {
                     alert(error)
                 })
             })
         })
+        setTimeout(() => {
+            if (props.user && props.user.email){
+
+            }
+            goNext();
+        }, 600)
+
+
 
 
     }
@@ -75,7 +89,15 @@ function ReservationSystem(props){
 
 
     const handleTimeClick = (time) =>{
-        console.log(time)
+        let contains = false;
+        time.forEach((chunk) => {
+            console.log(chunk < new Date(Date.now()))
+            if (isInArray(bookings, chunk) || chunk < new Date(Date.now())){  
+                contains = true;
+            }
+        })
+        //not the greatest solution, but will do
+        if (contains == true) return;
         setReservationDate(time);
 
     }
@@ -96,6 +118,7 @@ function ReservationSystem(props){
 
                         ])
                     })
+
                     setBookingsParsed(true);
 
 
@@ -129,9 +152,9 @@ function ReservationSystem(props){
         <Step2 currentStep={currentStep} bookingsParsed={bookingsParsed} openHours={openHours} handleTimeClick={handleTimeClick} bookings={bookings} time={reservationDate}></Step2>
 
 
-        <Step3 currentStep={currentStep} user={props.user} addReservation={addReservation} nameCustomer={nameCustomer} setNameCustomer={setNameCustomer} numberCustomer={numberCustomer} setNumberCustomer={setNumberCustomer}></Step3>
+        <Step3 currentStep={currentStep} reservation={reservationDate} user={props.user} addReservation={addReservation} nameCustomer={nameCustomer} setNameCustomer={setNameCustomer} numberCustomer={numberCustomer} setNumberCustomer={setNumberCustomer}></Step3>
 
-        <Step4 currentStep={currentStep}></Step4>
+        <Step4 currentStep={currentStep} ids={reservationIds}></Step4>
         {
             (currentStep > 1 && currentStep < 4) &&
             <button onClick={goBack}>Back</button>
@@ -141,10 +164,7 @@ function ReservationSystem(props){
             <button onClick={goNext}>Next</button>
         }
 
-        {
-            showPopupAdded === true &&
-            <PopUp title="Added reservation" text="Successfully added reservation." closePopup={() => setShowPopupAdded(false)}></PopUp>
-        }
+
         </Fragment>
     );
     

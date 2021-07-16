@@ -56,7 +56,7 @@ function App() {
         <Router>
         <div>
           <div id="sidenav" className="sidenav">
-            <a href="javascript:void(0)" class="closebtn" onClick={closeNav}>&times;</a>
+            <a href="javascript:void(0)" className="closebtn" onClick={closeNav}>&times;</a>
             <br/>
             <Link to="/" onClick={() => closeNav()}>Home</Link>
             <br/>
@@ -65,10 +65,10 @@ function App() {
             {user? <Link to="/account" onClick={() => closeNav()}>Account</Link> : <Link to="/signin" onClick={() => closeNav()}>Sign in</Link>}
 
           </div>
-          <div class="container" onClick={openNav}>
-            <div class="bar1"></div>
-            <div class="bar2"></div>
-            <div class="bar3"></div>
+          <div className="container" onClick={openNav}>
+            <div className="bar1"></div>
+            <div className="bar2"></div>
+            <div className="bar3"></div>
           </div> 
           
 

@@ -37,7 +37,7 @@ function AdminPanel(props){
         }
         setShowAddRoom(false);
         setShowLoadingAddRoom(true);
-        roomsRef.add({name: nameRoom, openHours: [9.5, 21]}).then((res) => {
+        roomsRef.add({name: nameRoom, openHours: [9, 21]}).then((res) => {
             setShowLoadingAddRoom(false);
             window.location.reload();
         });

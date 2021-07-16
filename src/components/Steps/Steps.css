@@ -1,3 +1,15 @@
+.calendar{
+  padding: 10px 15px;
+  border-radius: 15px;
+  background-color: transparent;
+  border: 2px solid;
+}
+.calendar > div > div > div > div > p{
+  color:white;
+}
+.calendar > div > div > div > div > h2{
+  color:white;
+}
 .step{
   font-size: 40px;
 }
