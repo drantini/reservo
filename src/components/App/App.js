@@ -8,7 +8,6 @@ import AccountManagement from '../AccountManagement/AccountManagement'
 import { auth, firestore } from '../../helpers/firebase'
 import { useAuthState } from 'react-firebase-hooks/auth';
 
-import { useTitle } from '../../helpers/hooks/setTitle';
 import { useState, useEffect } from 'react';
 
 import {
@@ -28,7 +27,6 @@ function App() {
   const [user, loading] = useAuthState(auth);
   const [wasAdminChecked, setWasAdminChecked] = useState(false);
   const [isAdmin, setIsAdmin] = useState(false);
-  useTitle('Reservo')
 
   const closeNav = () =>{
     document.getElementById('sidenav').style.width = "0";
@@ -36,6 +34,9 @@ function App() {
   const openNav = () =>{
     document.getElementById('sidenav').style.width = "min(250px, 50vw)";
   }
+  useEffect(() => {
+    document.title = 'Reservo | Reservation System';
+  }, [])
   useEffect(() => {
     if (user == null) return;
 

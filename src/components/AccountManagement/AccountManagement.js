@@ -16,6 +16,7 @@ function Row(props){
         }else if(new Date(props.date) < Date.now()){
             setIsCurrently(true);
         }
+        console.log(props)
     }, [])
     const cancelReservation = () => {
         if(window.confirm("Are you sure you want to remove this reservation?")){
@@ -36,7 +37,6 @@ function Row(props){
             <td>{props.name}</td>
             <td>{props.number}</td>
             <td>{props.date}</td>
-            <td>{props.room}</td>
             {isExpired ? <td style={{color: 'red'}}>Expired</td> : isCurrently ? <td style={{color: 'green'}}>Currently</td> : <td onClick={cancelReservation} style={{cursor: 'pointer', textDecoration: 'underline'}}>Cancel</td>}
         </tr>
     )
@@ -60,7 +60,7 @@ function AccountManagement(props){
     }
     const fetchReservations = () => {
         console.log("fetchReservations")
-        let loadedReservations = []
+        setUserReservations([]);
         let rooms = [];
         let roomIds = [];
         firestore().collection('stations').get().then((querySnapshot) => {
@@ -70,14 +70,15 @@ function AccountManagement(props){
             })
             for(let i=0; i<roomIds.length; i++){
                 firestore().collection(`stations/${roomIds[i]}/bookings`).where("uid", "==", props.user.uid).get().then((querySnapshot) => {
+                    let reservation = {};
+
                     querySnapshot.forEach((doc) => {
-                        loadedReservations.push({
-                            name: doc.data().customer_name, 
-                            number: doc.data().phone_number,
-                            date: new Date(doc.data().start_time.seconds*1000),
-                            room: rooms[i],
-                            roomId: roomIds[i],
-                            delete_id: doc.id
+                        reservation = doc.data();
+                        firestore().doc(`stations/${roomIds[i]}/bookings/${doc.id}/private/0`).get().then((querySnap) => {
+                            reservation.customer_name = querySnap.data().customer_name;
+                            reservation.phone_number = querySnap.data().phone_number;
+                        
+                            setUserReservations(prev => [...prev, reservation])
                         })
                         
                     })
@@ -85,11 +86,7 @@ function AccountManagement(props){
                 })
 
             }
-            setTimeout(() => {
-                //TODO: Remove setTimeout, really ineffective and ghetto
-                setUserReservations(loadedReservations)
-
-            }, 750)
+            
 
         })
 
@@ -124,7 +121,7 @@ function AccountManagement(props){
         return null
     }
     return(
-        <div>
+        <div className="account">
             <button className="signin-btn" onClick={SignOut}>Sign out</button>
             <div className="personal-info">
                 <span>Personal information</span>
@@ -143,13 +140,12 @@ function AccountManagement(props){
                 <tr>
                     <th>Name</th>
                     <th>Number</th>
-                    <th>Date of start</th>
-                    <th>Room</th>
-                    <th>Actions</th>
+                    <th>Date</th>
+                    <th>Status</th>
                 </tr>
                 </thead>
                 <tbody>
-                {userReservations.map((data) => <Row key={data.delete_id} name={data.name} number={data.number} date={data.date.toLocaleString()} room={data.room} deleteId={data.delete_id} roomId={data.roomId} fetch={fetchReservations}></Row>)}
+                {userReservations.map((data) => <Row key={data.delete_id} name={data.customer_name} number={data.phone_number} date={new Date(data.start_time.seconds*1000).toLocaleString()} room={data.room} deleteId={data.delete_id} roomId={data.roomId} fetch={fetchReservations}></Row>)}
                 </tbody>
             </table>
         </div>

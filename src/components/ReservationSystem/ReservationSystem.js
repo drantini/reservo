@@ -3,7 +3,7 @@ import React, {Fragment, useEffect, useState} from 'react';
 import PopUp from '../PopUp/PopUp';
 
 import { firestore } from '../../helpers/firebase';
-import {Step1, Step2, Step3, Step4}  from '../Steps/Steps';
+import {Step1, Step2, Step3}  from '../Steps/Steps';
 import { useHistory } from 'react-router-dom';
 
 function isInArray(array, value) {
@@ -18,7 +18,6 @@ function ReservationSystem(props){
     const [bookingsParsed, setBookingsParsed] = useState(false);
     const [bookingsRef, setBookingsRef] = useState(firestore().collection('stations/0/bookings'));
     const [openHours, setOpenHours] = useState([]);
-    const roomsRef = firestore().collection('stations').orderBy("name")
     const [reservationIds, setReservationIds] = useState([]);
     const history = useHistory();
 
@@ -48,9 +47,11 @@ function ReservationSystem(props){
             let add_data = {
                 start_time: reservationTime,
                 end_time: end,
+            };
+            let private_data = {
                 customer_name: nameCustomer,
                 phone_number: numberCustomer
-            };
+            }
             if (props.user){
                 add_data.uid = props.user.uid
             }
@@ -67,8 +68,8 @@ function ReservationSystem(props){
                     setReservationIds(prevState => [
                         ...prevState,
                         docRef.id,
-
                     ])
+                    docRef.collection('private').doc('0').set(private_data);
                 }).catch(error => {
                     alert(error)
                 })
@@ -101,33 +102,30 @@ function ReservationSystem(props){
         setReservationDate(time);
 
     }
-    const handleRoomChange = (event) => {
-        const roomName = event.target.value;
+    const fetchRoom = () => {
         setBookings([])
         setBookingsParsed(false);
 
-        firestore().collection('stations').where('name', '==', roomName).get().then((querySnapshot) => {
-            querySnapshot.forEach((doc) => {
-                setBookingsRef(firestore().collection('stations/' + doc.id + '/bookings'))
-                setOpenHours(doc.data().openHours)
-                firestore().collection('stations/' + doc.id + '/bookings').get().then((querySnapshot) => {
-                    querySnapshot.forEach((doc) => {
-                        setBookings(prevState => [
-                            ...prevState,
-                            new Date(doc.data().start_time.seconds * 1000),
+        firestore().collection('stations').doc('main').get().then((querySnapshot) => {
+            let data = querySnapshot.data();
+            let id = querySnapshot.id
+            setOpenHours(data.openHours);
+            setBookingsRef(firestore().collection('stations/' + id + '/bookings'))
 
-                        ])
-                    })
+            firestore().collection('stations/' + id + '/bookings').get().then((querySnapshot) => {
+                querySnapshot.forEach((doc) => {
+                    setBookings(prevState => [
+                        ...prevState,
+                        new Date(doc.data().start_time.seconds * 1000),
 
-                    setBookingsParsed(true);
-
-
+                    ])
                 })
-            });
+
+                setBookingsParsed(true);
+            })
         
         });
 
-        goNext();
     }
 
     const goBack = () => {
@@ -143,24 +141,26 @@ function ReservationSystem(props){
         history.push('/account');
     }
 
+    useEffect(() => {
+        fetchRoom();
+    }, [])
     return(
         <Fragment>
         <button className="signin-btn" onClick={signInRedirect}>{props.user == null ? "Sign in" : "Manage reservations"}</button>
 
-        <Step1 currentStep={currentStep} handleRoomChange={handleRoomChange} roomsRef={roomsRef}></Step1>
 
-        <Step2 currentStep={currentStep} bookingsParsed={bookingsParsed} openHours={openHours} handleTimeClick={handleTimeClick} bookings={bookings} time={reservationDate}></Step2>
+        <Step1 currentStep={currentStep} bookingsParsed={bookingsParsed} openHours={openHours} handleTimeClick={handleTimeClick} bookings={bookings} time={reservationDate}></Step1>
 
 
-        <Step3 currentStep={currentStep} reservation={reservationDate} user={props.user} addReservation={addReservation} nameCustomer={nameCustomer} setNameCustomer={setNameCustomer} numberCustomer={numberCustomer} setNumberCustomer={setNumberCustomer}></Step3>
+        <Step2 currentStep={currentStep} reservation={reservationDate} user={props.user} addReservation={addReservation} nameCustomer={nameCustomer} setNameCustomer={setNameCustomer} numberCustomer={numberCustomer} setNumberCustomer={setNumberCustomer}></Step2>
 
-        <Step4 currentStep={currentStep} ids={reservationIds}></Step4>
+        <Step3 currentStep={currentStep} ids={reservationIds}></Step3>
         {
-            (currentStep > 1 && currentStep < 4) &&
+            (currentStep > 1 && currentStep < 3) &&
             <button onClick={goBack}>Back</button>
         }
         {
-            (currentStep == 2 && reservationDate.length > 0) &&
+            (currentStep < 2 && reservationDate.length > 0) &&
             <button onClick={goNext}>Next</button>
         }
 

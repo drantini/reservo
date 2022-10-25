@@ -1,55 +1,14 @@
 import { useState, useEffect} from 'react'
-import TimeCalendar from 'react-timecalendar';
 import BookingSelector from 'react-booking-selector';
 import './Steps.css';
 import { motion } from 'framer-motion';
 import ReCaptcha from '../ReCaptcha/ReCaptcha';
-import { auth, firebaseBuffer, firestore } from '../../helpers/firebase';
+import { firestore } from '../../helpers/firebase';
+
 
 
 function Step1(props){
-    const [stationNames, setStationNames] = useState([]);
-    
-
-    const loadStations = () => {
-        let loadedStationNames = []
-        props.roomsRef.get().then((querySnapshot) =>{
-            querySnapshot.forEach((doc) => {
-                loadedStationNames.push(doc.data().name)
-                
-            })
-            setStationNames(loadedStationNames)
-
-        })
-    }
-    useEffect(() => {
-        loadStations();
-    }, [])
-    if (props.currentStep != 1){
-        return null;
-    }
-
-    return(
-        <motion.div initial={{ opacity: 0}} animate={{ opacity: 1 }}
-        transition={{
-          type: "spring",
-          stiffness: 100,
-          damping: 20
-        }} className="step" id="step">
-        <label>
-            Select a room...
-            <br/>
-        <select name="rooms" id="rooms" onChange={props.handleRoomChange}>
-            <option>Choose</option>
-            {stationNames.map((station) => <option key={station}>{station}</option>)}
-        </select>
-        </label>
-        </motion.div>
-    )
-}
-export default Step1
-function Step2(props){
-    if (props.currentStep != 2 || props.openHours.length < 1 || props.bookingsParsed == false){
+    if (props.currentStep != 1 || props.openHours.length < 1 || props.bookingsParsed == false){
         return null;
     }
     
@@ -78,7 +37,7 @@ function Step2(props){
     )
 }
 
-function Step3(props){
+function Step2(props){
     const [allowSubmit, setAllowSubmit] = useState(false);
     useEffect(() => {
         if (props.user == null) return;
@@ -89,7 +48,7 @@ function Step3(props){
             }
         })
     }, [])
-    if (props.currentStep != 3){
+    if (props.currentStep != 2){
         return null;
     }
     const reservations = props.reservation;
@@ -116,8 +75,8 @@ function Step3(props){
     )
 }
 
-function Step4(props){
-    if (props.currentStep != 4){
+function Step3(props){
+    if (props.currentStep != 3){
         return null;
     }
     return(
@@ -132,4 +91,4 @@ function Step4(props){
     )
 }
 
-export {Step1, Step2, Step3, Step4};
+export {Step1, Step2, Step3};
