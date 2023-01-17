@@ -2,7 +2,7 @@ import React from 'react'
 import './PopUp.css'
 import { motion } from 'framer-motion';
 
-function PopUp(props){
+function PopUp({children, title, text, closePopup}){
     return(
         <div className="popup">
             <motion.div initial={{ opacity: 0}} animate={{ opacity: 1 }}
@@ -11,9 +11,10 @@ function PopUp(props){
             stiffness: 100,
             damping: 20
             }} className="popup-inner">
-                <h1>{props.title}</h1>
-                <span>{props.text}</span><br/>
-                <button className='close' onClick={props.closePopup}>Close</button>
+                <h1>{title}</h1>
+                <span>{text}</span><br/>
+
+                <button className='close' onClick={closePopup}>Close</button>
             </motion.div>
         </div>
     )

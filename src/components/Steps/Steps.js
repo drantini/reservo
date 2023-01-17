@@ -21,7 +21,7 @@ function Step1(props){
           damping: 20
         }}>
 
-        <span className="step" id="step">When?</span>
+        <span className="step" id="step">Kedy?</span>
         <div className="calendar">
         <BookingSelector
         selection = {props.time}
@@ -54,22 +54,23 @@ function Step2(props){
     const reservations = props.reservation;
     return(
         <div>
-        <span>Date and Time of reservation:</span>
-        <ul>
-        {reservations.map((time) => <li key={time}>{time.toLocaleString()}</li>)}
-        </ul>
+        <span>Dátum a čas rezervacie:</span>
+        <div className="list-card">
+            {reservations.map((time) => <span key={time}>{time.toLocaleString()}</span>)}
+        </div>
+
         <label>
-        Full name<br/>
+        Celé meno<br/>
         <input type="text" value={props.nameCustomer} onChange={e => props.setNameCustomer(e.target.value)}/>
         </label>
         <br/><br/>
         <label>
-            Phone number<br/>
+        Telefónne číslo<br/>
         <input type="text" value={props.numberCustomer} onChange={e => props.setNumberCustomer(e.target.value)}/>
 
         </label><br/>
         <ReCaptcha setAllowSubmit={setAllowSubmit} activator={props.currentStep}></ReCaptcha>
-        <button id="finish" className="finish" onClick={props.addReservation} disabled={!allowSubmit}>Add reservation</button>
+        <button id="finish" className="finish" onClick={props.addReservation} disabled={!allowSubmit}>Rezervovať</button>
 
         </div>
     )
@@ -85,8 +86,8 @@ function Step3(props){
             <circle className="checkmark__circle" cx="26" cy="26" r="25" fill="none"/>
             <path className="checkmark__check" fill="none" d="M14.1 27.2l7.1 7.2 16.7-16.8"/>
         </svg>
-        <span className="step" id="step">Successfully added your reservation.</span><br/>
-        <small>Reservation IDs: <br/>{props.ids.join(", ")}</small>
+        <span className="step" id="step">Uspešne zarezervované. </span><br/>
+        <small>Kód rezervácie: <br/>{props.ids.join(", ")}</small>
         </div>
     )
 }

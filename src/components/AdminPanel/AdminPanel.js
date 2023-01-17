@@ -1,11 +1,8 @@
 import './AdminPanel.css'
 import React, {useEffect, useState} from 'react'
-import InputPopUp from '../InputPopUp/InputPopUp';
-import {Loading} from '../Reservation/Reservation';
-import Room from '../Room/Room';
+
 
 import { auth, firestore } from '../../helpers/firebase'
-import { useCollectionData } from 'react-firebase-hooks/firestore';
 
 function ReservationRow({name, number, date}){
     const [isExpired, setIsExpired] = useState(false);
@@ -29,7 +26,7 @@ function ReservationRow({name, number, date}){
             <td>{name}</td>
             <td>{number}</td>
             <td>{date}</td>
-            {isExpired ? <td style={{color: 'red'}}>Expired</td> : isCurrently ? <td style={{color: 'green'}}>Currently</td> : <td style={{cursor: 'pointer', textDecoration: 'underline'}}>Cancel</td>}
+            {isExpired ? <td style={{color: 'red'}}>Skončené</td> : isCurrently ? <td style={{color: 'green'}}>Momentálne</td> : <td style={{cursor: 'pointer', textDecoration: 'underline'}}>Zrušiť</td>}
         </tr>
     )
 }
@@ -78,15 +75,15 @@ function AdminPanel(props){
 
     return(
         <div className="admin-panel">
-            <button className="signin-btn" onClick={SignOut}>Sign out</button>
-            <p>Welcome to Admin Panel of Reservo.</p>
-            <span>Upcoming reservations:</span><br/>
+            <button className="signin-btn" onClick={SignOut}>Odhlásiť sa</button>
+            <p>Administrátorsky panel</p>
+            <span>Nasledujúce rezervácie:</span><br/>
             <table>
                 <thead>
                 <tr>
-                    <th>Name</th>
-                    <th>Number</th>
-                    <th>Date</th>
+                    <th>Meno</th>
+                    <th>Číslo</th>
+                    <th>Dátum</th>
                     <th>Status</th>
                 </tr>
                 </thead>

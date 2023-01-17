@@ -2,11 +2,13 @@ import { auth, firestore } from '../../helpers/firebase'
 import './AccountManagement.css'
 import { useState, useEffect } from 'react';
 import { useHistory } from 'react-router-dom'
-
+import Popover from '../Popover/Popover';
 
 function Row(props){
     const [isExpired, setIsExpired] = useState(false);
     const [isCurrently, setIsCurrently] = useState(false);
+    const [isOpen, setIsOpen] = useState(false);
+    const [editId, setEditId] = useState('');
 
     useEffect(() => {
         let date = new Date(props.date)
@@ -16,10 +18,14 @@ function Row(props){
         }else if(new Date(props.date) < Date.now()){
             setIsCurrently(true);
         }
-        console.log(props)
     }, [])
+
+    const openPopover = (id) => {
+        setEditId(id);
+        setIsOpen(true);
+    }
     const cancelReservation = () => {
-        if(window.confirm("Are you sure you want to remove this reservation?")){
+        if(window.confirm("Naozaj chcete zrušiť rezerváciu?")){
             firestore().collection(`stations/${props.roomId}/bookings`).doc(props.deleteId).delete().then(() => {
                 setTimeout(() =>{
                     props.fetch()
@@ -33,12 +39,24 @@ function Row(props){
     }
 
     return(
+        <>
         <tr>
             <td>{props.name}</td>
             <td>{props.number}</td>
             <td>{props.date}</td>
-            {isExpired ? <td style={{color: 'red'}}>Expired</td> : isCurrently ? <td style={{color: 'green'}}>Currently</td> : <td onClick={cancelReservation} style={{cursor: 'pointer', textDecoration: 'underline'}}>Cancel</td>}
+            {isExpired ? <td style={{color: 'red'}}>Skončené</td> : 
+            isCurrently ? <td style={{color: 'green'}}>Momentálne</td> : 
+            <div>
+                <td onClick={() => openPopover(true)} style={{cursor: 'pointer', textDecoration: 'underline'}}>Upraviť</td>
+                <td onClick={cancelReservation} style={{cursor: 'pointer', textDecoration: 'underline'}}>Zrušiť</td>
+            </div>}
+
         </tr>
+        
+        <Popover isOpen={isOpen} setIsOpen={setIsOpen}>
+                <span>Hello</span>
+        </Popover>
+        </>
     )
 }
 
@@ -52,7 +70,6 @@ function AccountManagement(props){
         e.preventDefault();
         auth.signOut().then(() => {
             history.push("/")
-            console.log("Signed out successfully.")
         }).catch((e) => {
             console.log(e);
         });
@@ -74,10 +91,13 @@ function AccountManagement(props){
 
                     querySnapshot.forEach((doc) => {
                         reservation = doc.data();
+                        reservation.roomId = roomIds[i];
+                        reservation.deleteId = doc.id;
+
                         firestore().doc(`stations/${roomIds[i]}/bookings/${doc.id}/private/0`).get().then((querySnap) => {
                             reservation.customer_name = querySnap.data().customer_name;
                             reservation.phone_number = querySnap.data().phone_number;
-                        
+                            
                             setUserReservations(prev => [...prev, reservation])
                         })
                         
@@ -122,30 +142,30 @@ function AccountManagement(props){
     }
     return(
         <div className="account">
-            <button className="signin-btn" onClick={SignOut}>Sign out</button>
+            <button className="signin-btn" onClick={SignOut}>Odhlásiť sa</button>
             <div className="personal-info">
-                <span>Personal information</span>
-                <small>(Fill in this information to speed up reservation process.)</small><br/>
-                <span>Full name</span>
+                <span>Osobné údaje</span>
+                <small>(Vyplňte tieto údaje pre urýchlenie budúcich rezervacií)</small><br/>
+                <span>Celé meno</span>
                 <input type="text" value={fullName} onChange={e => setFullName(e.target.value)}></input>
 
-                <span>Phone number</span>
+                <span>Telefónne číslo</span>
                 <input type="text" value={phoneNumber} onChange={e => setPhoneNumber(e.target.value)}></input>
                 
-                <button onClick={updatePersonalInformation}>Update</button>
+                <button onClick={updatePersonalInformation}>Aktualizovať</button>
             </div>
-            <span className="text-medium">Your reservations</span>
+            <span className="text-medium">Tvoje rezervácie</span>
             <table>
                 <thead>
                 <tr>
-                    <th>Name</th>
-                    <th>Number</th>
-                    <th>Date</th>
+                    <th>Meno</th>
+                    <th>Číslo</th>
+                    <th>Dátum</th>
                     <th>Status</th>
                 </tr>
                 </thead>
                 <tbody>
-                {userReservations.map((data) => <Row key={data.delete_id} name={data.customer_name} number={data.phone_number} date={new Date(data.start_time.seconds*1000).toLocaleString()} room={data.room} deleteId={data.delete_id} roomId={data.roomId} fetch={fetchReservations}></Row>)}
+                {userReservations.map((data) => <Row key={data.deleteId} name={data.customer_name} number={data.phone_number} date={new Date(data.start_time.seconds*1000).toLocaleString()} room={data.room} deleteId={data.deleteId} roomId={data.roomId} fetch={fetchReservations}></Row>)}
                 </tbody>
             </table>
         </div>

@@ -19,11 +19,11 @@ function ForgotPassword(props){
     return(
         <div>
             <label>
-                Email associated with account<br></br>
+                Email pripojený k účtu<br></br>
             <input type="text" value={email} onChange={e => setEmail(e.target.value)} onKeyDown={keyLogin}/>
             </label>
             <br/>
-            <button onClick={resetPassword}>Reset password</button>
+            <button onClick={resetPassword}>Resetovať heslo</button>
         </div>
     )
 }

@@ -59,11 +59,11 @@ function App() {
           <div id="sidenav" className="sidenav">
             <a href="javascript:void(0)" className="closebtn" onClick={closeNav}>&times;</a>
             <br/>
-            <Link to="/" onClick={() => closeNav()}>Home</Link>
+            <Link to="/" onClick={() => closeNav()}>Domov</Link>
             <br/>
             {isAdmin ? <Link to="/admin" onClick={() => closeNav()}>Admin</Link> : null}
             <br/>
-            {user? <Link to="/account" onClick={() => closeNav()}>Account</Link> : <Link to="/signin" onClick={() => closeNav()}>Sign in</Link>}
+            {user? <Link to="/account" onClick={() => closeNav()}>Účet</Link> : <Link to="/signin" onClick={() => closeNav()}>Sign in</Link>}
 
           </div>
           <div className="container" onClick={openNav}>
@@ -79,7 +79,7 @@ function App() {
             atActive={{ opacity: 1 }}
             className="switch-wrapper">
             <Route path="/admin">
-            {user && isAdmin ? <AdminPanel/> : <span>Please sign in as administrator to see contents.</span>}
+            {user && isAdmin ? <AdminPanel/> : <span>Prosím prihláste sa ako administrátor na prezeranie tejto stránky.</span>}
             </Route>
             <Route path="/signin">
               <SignIn user={user}/>

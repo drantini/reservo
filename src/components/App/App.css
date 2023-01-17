@@ -53,25 +53,30 @@
   color: white;
 }
 button{
-  transition: 0.3s ease-in;
+  transition: 0.2s ease-in;
   background: rgb(204, 204, 204);
+  border: none;
   color: #282c34;
   overflow: hidden;
   min-width: 60px;
-  padding: 5px 5px;
+  padding: 5px 10px;
   font-size:18px;
-  border-radius: 5px;
+  border-radius: 10px;
   width: auto;
+  font-weight: 600;
   margin-top: 10px;
   margin-right: 10px;
   margin-bottom: 5px;
   margin-left: 10px;
-
+  border: 1px solid gray;
 }
 button:hover{
-  background: #282c34;
+  background: transparent;
   color: rgb(204, 204, 204);
   cursor: pointer;
+}
+button:active{
+  background: #3d434f;
 }
 
  /* The side navigation menu */

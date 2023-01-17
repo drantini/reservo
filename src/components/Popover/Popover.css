@@ -1,0 +1,19 @@
+.popover-outer{
+    position:fixed;
+    top:0;
+    left:0;
+    width:100vw;
+    height:100vh;
+    background-color: rgba(0,0,0, 0.6);
+}
+.popover-inner{
+    transition: 0.2s ease-in;
+    background: rgb(73, 73, 73);
+    box-shadow: 0 0 10px 10px rgba(0,0,0,0.5);
+    color: white;
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    padding: 10px 10px;
+    transform: translate(-50%,-50%);
+}

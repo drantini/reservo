@@ -5,7 +5,7 @@ import PopUp from '../PopUp/PopUp';
 import { firestore } from '../../helpers/firebase';
 import {Step1, Step2, Step3}  from '../Steps/Steps';
 import { useHistory } from 'react-router-dom';
-
+import { motion } from 'framer-motion';
 function isInArray(array, value) {
     return !!array.find(item => {return item.getTime() == value.getTime()});
 }
@@ -146,7 +146,7 @@ function ReservationSystem(props){
     }, [])
     return(
         <Fragment>
-        <button className="signin-btn" onClick={signInRedirect}>{props.user == null ? "Sign in" : "Manage reservations"}</button>
+        <button className="signin-btn" onClick={signInRedirect}>{props.user == null ? "Prihlásiť sa" : "Môj účet"}</button>
 
 
         <Step1 currentStep={currentStep} bookingsParsed={bookingsParsed} openHours={openHours} handleTimeClick={handleTimeClick} bookings={bookings} time={reservationDate}></Step1>
@@ -157,11 +157,21 @@ function ReservationSystem(props){
         <Step3 currentStep={currentStep} ids={reservationIds}></Step3>
         {
             (currentStep > 1 && currentStep < 3) &&
-            <button onClick={goBack}>Back</button>
+            <motion.button className='arrow-button left-arrow' 
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            onClick={goBack}
+            whileHover={{ scale: 1.1 }}
+            whileTap={{ scale: 0.9 }}>&laquo;</motion.button>
         }
         {
             (currentStep < 2 && reservationDate.length > 0) &&
-            <button onClick={goNext}>Next</button>
+            <motion.button className='arrow-button right-arrow' 
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            onClick={goNext}
+            whileHover={{ scale: 1.1 }}
+            whileTap={{ scale: 0.9 }}>&raquo;</motion.button>
         }
 
 

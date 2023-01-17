@@ -10,6 +10,15 @@
 .calendar > div > div > div > div > h2{
   color:white;
 }
+.list-card{
+  background-color: rgb(45, 55, 71);
+  border-radius: 10px;
+  margin-top: 10px;
+  margin-bottom: 25px;
+  padding: 10px 10px;  
+  display: flex;
+  flex-direction: column;
+}
 .step{
   font-size: 40px;
 }

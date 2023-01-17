@@ -27,7 +27,23 @@ option{
     border: 1px solid gray;
     border-radius: 10px;
     position: fixed; /* Stay in place */
-    z-index: 1; /* Stay on top */
     top: 0; /* Stay at the top */
     right: 0;
+}
+.arrow-button{
+    background: none;
+    border: none;
+    color: white;
+    font-size: 150px;
+    position: fixed;
+    top: calc(50% - 150px);
+}
+.arrow-button:active{
+    background-color: transparent;
+}
+.right-arrow{
+    right: 0;
+}
+.left-arrow{
+    left: 0;
 }
