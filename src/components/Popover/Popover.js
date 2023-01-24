@@ -8,8 +8,9 @@ function Popover({children, isOpen, setIsOpen}){
         <AnimatePresence>
             {isOpen && <motion.div className="popover-outer" initial={{opacity: 0}} animate={{opacity: 1}} exit={{opacity: 0}}>
                 <div className="popover-inner">
-                    <button className="close" onClick={() => setIsOpen(false)}>Close</button>
                     {children}
+                    <button className="close" onClick={() => setIsOpen(false)}>Zrušiť</button>
+
                 </div>
             </motion.div>}
         </AnimatePresence>

@@ -86,8 +86,8 @@ function Step3(props){
             <circle className="checkmark__circle" cx="26" cy="26" r="25" fill="none"/>
             <path className="checkmark__check" fill="none" d="M14.1 27.2l7.1 7.2 16.7-16.8"/>
         </svg>
-        <span className="step" id="step">Uspešne zarezervované. </span><br/>
-        <small>Kód rezervácie: <br/>{props.ids.join(", ")}</small>
+        <span className="step" id="step">Úspešne zarezervované.</span><br/>
+        <small>Kód {props.ids.length > 0 ? "rezervacií" : "rezervácie"}: <br/>{props.ids.join(", ")}</small>
         </div>
     )
 }

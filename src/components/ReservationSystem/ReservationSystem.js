@@ -29,16 +29,16 @@ function ReservationSystem(props){
 
     const addReservation = () => {
         if (/^\d{10}$/.test(numberCustomer) === false){
-            return alert("Incorrect phone number. (Correct example: 0944111985)")
+            return alert("Neplatne číslo. (Príklad správneho formátu: 0944111985)")
         }
         if (reservationDate.length == 0){
-            return alert("Please select date and time.")
+            return alert("Prosím vyber datum a čas rezervácie.")
         }
         if (nameCustomer.length <= 0){
-            return alert("Please enter your name.")
+            return alert("Prosím napíš meno.")
         }
         if (numberCustomer.length <= 0){
-            return alert("Please enter your phone number.")
+            return alert("Prosím napíš číslo.")
         }
 
         reservationDate.forEach((reservationTime) => {
@@ -61,7 +61,7 @@ function ReservationSystem(props){
             bookingsRef.get().then((querySnapshot) => {
                 querySnapshot.forEach((doc) => {
                     if (doc.data().start_time.seconds === timestamp){
-                        return alert('Oops! Seems like someone already reserved for this time. :(');
+                        return alert('Ups! Vyzerá to tak že už niekto má rezerváciu na tento čas. :(');
                     }
                 });
                 bookingsRef.add(add_data).then((docRef) => {
@@ -77,7 +77,7 @@ function ReservationSystem(props){
         })
         setTimeout(() => {
             if (props.user && props.user.email){
-
+                //idk?
             }
             goNext();
         }, 600)

@@ -8,28 +8,43 @@ function Row(props){
     const [isExpired, setIsExpired] = useState(false);
     const [isCurrently, setIsCurrently] = useState(false);
     const [isOpen, setIsOpen] = useState(false);
-    const [editId, setEditId] = useState('');
+    const [name, setName] = useState(props.name);
+    const [number, setNumber] = useState(props.number);
+
 
     useEffect(() => {
-        let date = new Date(props.date)
+        let date = props.rawDate;
         date.setMinutes(date.getMinutes() + 30);
         if (date < Date.now()){
             setIsExpired(true);
-        }else if(new Date(props.date) < Date.now()){
+        }else if(new Date(props.rawDate) < Date.now()){
             setIsCurrently(true);
         }
     }, [])
 
-    const openPopover = (id) => {
-        setEditId(id);
+    const openPopover = () => {
         setIsOpen(true);
     }
+
+    const editReservation = () => {
+        firestore().collection(`stations/${props.roomId}/bookings`).doc(props.deleteId).collection('private').doc('0').update({
+            customer_name: name,
+            phone_number: number
+        }).then(() => {
+            setTimeout(() => {
+                props.fetch();
+                setIsOpen(false)
+            }, 400)
+        }).catch((error) => {
+            alert(error);
+        })
+    }
+
     const cancelReservation = () => {
         if(window.confirm("Naozaj chcete zrušiť rezerváciu?")){
             firestore().collection(`stations/${props.roomId}/bookings`).doc(props.deleteId).delete().then(() => {
                 setTimeout(() =>{
                     props.fetch()
-
                 }, 1000)
             }).catch((error) => {
                 alert(error);
@@ -47,14 +62,25 @@ function Row(props){
             {isExpired ? <td style={{color: 'red'}}>Skončené</td> : 
             isCurrently ? <td style={{color: 'green'}}>Momentálne</td> : 
             <div>
-                <td onClick={() => openPopover(true)} style={{cursor: 'pointer', textDecoration: 'underline'}}>Upraviť</td>
+                <td onClick={openPopover} style={{cursor: 'pointer', textDecoration: 'underline'}}>Upraviť</td>
                 <td onClick={cancelReservation} style={{cursor: 'pointer', textDecoration: 'underline'}}>Zrušiť</td>
             </div>}
 
         </tr>
         
         <Popover isOpen={isOpen} setIsOpen={setIsOpen}>
-                <span>Hello</span>
+            <span>Zmena údajov</span>
+            <br/>
+            <label>
+            Celé meno<br/>
+            <input type="text" value={name} onChange={e => setName(e.target.value)}/>
+            </label>
+            
+            <label>
+            Telefónne číslo<br/>
+            <input type="text" value={number} onChange={e => setNumber(e.target.value)}/>
+            </label>
+            <button onClick={editReservation}>Aktualizovať</button>
         </Popover>
         </>
     )
@@ -76,49 +102,41 @@ function AccountManagement(props){
         
     }
     const fetchReservations = () => {
-        console.log("fetchReservations")
         setUserReservations([]);
-        let rooms = [];
-        let roomIds = [];
-        firestore().collection('stations').get().then((querySnapshot) => {
-            querySnapshot.forEach((doc) => {
-                rooms.push(doc.data().name);
-                roomIds.push(doc.id);
-            })
-            for(let i=0; i<roomIds.length; i++){
-                firestore().collection(`stations/${roomIds[i]}/bookings`).where("uid", "==", props.user.uid).get().then((querySnapshot) => {
-                    let reservation = {};
-
-                    querySnapshot.forEach((doc) => {
-                        reservation = doc.data();
-                        reservation.roomId = roomIds[i];
-                        reservation.deleteId = doc.id;
-
-                        firestore().doc(`stations/${roomIds[i]}/bookings/${doc.id}/private/0`).get().then((querySnap) => {
-                            reservation.customer_name = querySnap.data().customer_name;
-                            reservation.phone_number = querySnap.data().phone_number;
-                            
-                            setUserReservations(prev => [...prev, reservation])
-                        })
-                        
-                    })
-
-                })
-
-            }
+        firestore().collection(`stations/main/bookings`).where("uid", "==", props.user.uid).get().then((querySnapshot) => {
             
-
+            querySnapshot.forEach(async (doc) => {
+                let reservation = {};
+                reservation = doc.data();
+                reservation.roomId = 'main';
+                reservation.deleteId = doc.id;
+                let result = await firestore().doc(`stations/main/bookings/${doc.id}/private/0`).get();
+                reservation.customer_name = result.data().customer_name;
+                reservation.phone_number = result.data().phone_number;
+                setUserReservations(prev => [...prev, reservation]);
+                
+                
+                
+            })
         })
 
-
-
+        
+    }
+    const deletePersonalInformation = () => {
+        firestore().collection(`users/${props.user.uid}/private`).doc('information').delete().then(() => {
+            alert("Osobné údaje úspešne zmazané.");
+            setFullName("");
+            setPhoneNumber("");
+        }).catch((error) => {
+            alert(error);
+        })
     }
     const updatePersonalInformation = () => {
         firestore().collection(`users/${props.user.uid}/private`).doc('information').set({
             full_name: fullName,
             phone_number: phoneNumber
         }).then(() => {
-            alert("Updated personal information successfully.");
+            alert("Osobné údaje úspešne zmenené.");
         }).catch((error) => {
             alert(error);
         })
@@ -137,6 +155,7 @@ function AccountManagement(props){
         })
         fetchReservations();
     }, [])
+
     if (props.user == null){
         return null
     }
@@ -152,7 +171,10 @@ function AccountManagement(props){
                 <span>Telefónne číslo</span>
                 <input type="text" value={phoneNumber} onChange={e => setPhoneNumber(e.target.value)}></input>
                 
+                <div>
+                {fullName.length > 0 && phoneNumber.length > 0 && <button className="ghost" onClick={deletePersonalInformation}>Zmazať</button>}
                 <button onClick={updatePersonalInformation}>Aktualizovať</button>
+                </div>
             </div>
             <span className="text-medium">Tvoje rezervácie</span>
             <table>
@@ -165,7 +187,7 @@ function AccountManagement(props){
                 </tr>
                 </thead>
                 <tbody>
-                {userReservations.map((data) => <Row key={data.deleteId} name={data.customer_name} number={data.phone_number} date={new Date(data.start_time.seconds*1000).toLocaleString()} room={data.room} deleteId={data.deleteId} roomId={data.roomId} fetch={fetchReservations}></Row>)}
+                {userReservations.map((data) => <Row key={data.deleteId} name={data.customer_name} number={data.phone_number} rawDate={new Date(data.start_time.seconds*1000)} date={new Date(data.start_time.seconds*1000).toLocaleString()} room={data.room} deleteId={data.deleteId} roomId={data.roomId} fetch={fetchReservations}></Row>)}
                 </tbody>
             </table>
         </div>

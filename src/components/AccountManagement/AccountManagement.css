@@ -28,3 +28,11 @@ td{
 table {
   border-collapse: collapse;
 }
+.ghost{
+  background: transparent;
+  color: #fff;
+  border: none;
+}
+.ghost:hover{
+  color:rgb(145, 147, 151);
+}
