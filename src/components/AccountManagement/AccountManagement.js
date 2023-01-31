@@ -90,6 +90,8 @@ function AccountManagement(props){
     const [fullName, setFullName] = useState("");
     const [phoneNumber, setPhoneNumber] = useState("");
     const [userReservations, setUserReservations] = useState([]);
+    const [displayReservations, setDisplayReservations] = useState([]);
+    const [displayOld, setDisplayOld] = useState(false);
     const history = useHistory();
 
     const SignOut = e => {
@@ -155,6 +157,18 @@ function AccountManagement(props){
         })
         fetchReservations();
     }, [])
+    useEffect(() => {
+            setDisplayReservations(userReservations.filter((reservation) => {
+                let reservationDate = new Date(reservation.start_time.seconds*1000)
+                let currentDate = new Date();
+                if (displayOld){
+                    return true;
+                }else{
+                    return reservationDate > currentDate;
+                }
+            }))
+        
+    }, [displayOld])
 
     if (props.user == null){
         return null
@@ -177,6 +191,10 @@ function AccountManagement(props){
                 </div>
             </div>
             <span className="text-medium">Tvoje rezervácie</span>
+            <span>
+            <input type="checkbox" checked={displayOld} onChange={e => setDisplayOld(e.target.checked)}></input>
+            Zobrazovať staré rezervácie
+            </span>
             <table>
                 <thead>
                 <tr>
@@ -187,7 +205,7 @@ function AccountManagement(props){
                 </tr>
                 </thead>
                 <tbody>
-                {userReservations.map((data) => <Row key={data.deleteId} name={data.customer_name} number={data.phone_number} rawDate={new Date(data.start_time.seconds*1000)} date={new Date(data.start_time.seconds*1000).toLocaleString()} room={data.room} deleteId={data.deleteId} roomId={data.roomId} fetch={fetchReservations}></Row>)}
+                {displayReservations.map((data) => <Row key={data.deleteId} name={data.customer_name} number={data.phone_number} rawDate={new Date(data.start_time.seconds*1000)} date={new Date(data.start_time.seconds*1000).toLocaleString()} room={data.room} deleteId={data.deleteId} roomId={data.roomId} fetch={fetchReservations}></Row>)}
                 </tbody>
             </table>
         </div>
