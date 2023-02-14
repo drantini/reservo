@@ -100,7 +100,7 @@ function AccountManagement(props){
             history.push("/")
         }).catch((e) => {
             console.log(e);
-        });
+    });
         
     }
     const fetchReservations = () => {
@@ -158,17 +158,19 @@ function AccountManagement(props){
         fetchReservations();
     }, [])
     useEffect(() => {
+        if (displayOld){
+            setDisplayReservations(userReservations);
+        }else{
             setDisplayReservations(userReservations.filter((reservation) => {
-                let reservationDate = new Date(reservation.start_time.seconds*1000)
-                let currentDate = new Date();
-                if (displayOld){
-                    return true;
-                }else{
-                    return reservationDate > currentDate;
-                }
+                let reservationDate = reservation.start_time.seconds*1000
+                let currentDate = Date.now();
+                return reservationDate > currentDate;
+                
             }))
-        
-    }, [displayOld])
+        }
+
+            
+    }, [displayOld, userReservations])
 
     if (props.user == null){
         return null
