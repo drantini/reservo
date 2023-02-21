@@ -22,6 +22,23 @@ table, th, td {
   align-items: center;
   justify-content:center;
 }
+.vertical{
+  display:flex;
+  flex-direction: column;
+  gap: 5px;
+}
+.center{
+  align-items: center;
+  justify-content: center;
+}
+.calendar > div > div > div > div > p{
+  color:white;
+}
+.horizontal{
+  display:flex;
+  flex-direction: row;
+  gap: 15px;
+}
 td{
   margin-bottom: 5px;
 }

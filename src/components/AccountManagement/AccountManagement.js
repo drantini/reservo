@@ -3,14 +3,19 @@ import './AccountManagement.css'
 import { useState, useEffect } from 'react';
 import { useHistory } from 'react-router-dom'
 import Popover from '../Popover/Popover';
-
+import BookingSelector from 'react-booking-selector/dist/lib/BookingSelector';
+function isInArray(array, value) {
+    return !!array.find(item => {return item.getTime() == value.getTime()});
+}
 function Row(props){
     const [isExpired, setIsExpired] = useState(false);
     const [isCurrently, setIsCurrently] = useState(false);
     const [isOpen, setIsOpen] = useState(false);
     const [name, setName] = useState(props.name);
     const [number, setNumber] = useState(props.number);
-
+    const [openHours, setOpenHours] = useState([]);
+    const [bookings, setBookings] = useState([]);
+    const [reservationDate, setReservationDate] = useState([props.rawDate]);
 
     useEffect(() => {
         let date = props.rawDate;
@@ -29,17 +34,61 @@ function Row(props){
     const editReservation = () => {
         firestore().collection(`stations/${props.roomId}/bookings`).doc(props.deleteId).collection('private').doc('0').update({
             customer_name: name,
-            phone_number: number
+            phone_number: number,
         }).then(() => {
-            setTimeout(() => {
-                props.fetch();
-                setIsOpen(false)
-            }, 400)
+            firestore().collection(`stations/${props.roomId}/bookings`).doc(props.deleteId).update({
+                start_time: firestore.Timestamp.fromDate(reservationDate[0]),
+                end_time: firestore.Timestamp.fromDate(new Date(reservationDate[0].getTime() + 30 * 60000)),
+            }).then(() => {
+                setTimeout(() => {
+                    props.fetch();
+                    setIsOpen(false)
+                }, 400)
+            })
         }).catch((error) => {
             alert(error);
         })
     }
+    const fetchRoom = () => {
+        setBookings([])
 
+        firestore().collection('stations').doc('main').get().then((querySnapshot) => {
+            let data = querySnapshot.data();
+            let id = querySnapshot.id
+            setOpenHours(data.openHours);
+
+            firestore().collection('stations/' + id + '/bookings').get().then((querySnapshot) => {
+                querySnapshot.forEach((doc) => {
+                    if (!(reservationDate.length > 0 && reservationDate[0].getTime() == doc.data().end_time.seconds * 1000)){
+                        setBookings(prevState => [
+                            ...prevState,
+                            new Date(doc.data().start_time.seconds * 1000),
+                        ])
+                    }
+
+                })
+
+            })
+        
+        });
+
+    }
+    const handleTimeClick = (time) =>{
+        let contains = false;
+        time.forEach((chunk) => {
+            
+            if (isInArray(bookings, chunk)){  
+                contains = true;
+            }
+
+        })
+        //not the greatest solution, but will do
+        if (contains == true) return;
+        let last = time[time.length - 1];
+        
+        setReservationDate([last]);
+
+    }
     const cancelReservation = () => {
         if(window.confirm("Naozaj chcete zrušiť rezerváciu?")){
             firestore().collection(`stations/${props.roomId}/bookings`).doc(props.deleteId).delete().then(() => {
@@ -52,6 +101,11 @@ function Row(props){
         }
         
     }
+    useEffect(() => {
+        
+        fetchRoom();
+        
+    }, [])
 
     return(
         <>
@@ -69,18 +123,33 @@ function Row(props){
         </tr>
         
         <Popover isOpen={isOpen} setIsOpen={setIsOpen}>
-            <span>Zmena údajov</span>
-            <br/>
-            <label>
-            Celé meno<br/>
-            <input type="text" value={name} onChange={e => setName(e.target.value)}/>
-            </label>
-            
-            <label>
-            Telefónne číslo<br/>
-            <input type="text" value={number} onChange={e => setNumber(e.target.value)}/>
-            </label>
-            <button onClick={editReservation}>Aktualizovať</button>
+            <div className="horizontal">
+                <div className="vertical center">
+                    <span>Zmena dátumu</span>
+                    <br/>
+                    <div className='calendar'>
+                        <BookingSelector
+                        selection = {reservationDate}
+                        margin="4"
+                        minTime = {openHours[0]}
+                        maxTime = {openHours[1]}
+                        blocked = {bookings}
+                        onChange = {handleTimeClick}/>
+                    </div>
+                </div>
+                <div className="vertical center">
+                    <span>Zmena údajov</span>
+                    <label>
+                        Celé meno<br/>
+                        <input type="text" value={name} onChange={e => setName(e.target.value)}/>
+                    </label>
+                    <label>
+                        Telefónne číslo<br/>
+                        <input type="text" value={number} onChange={e => setNumber(e.target.value)}/>
+                    </label>
+                    <button onClick={editReservation}>Aktualizovať</button>
+                </div>
+            </div>
         </Popover>
         </>
     )
