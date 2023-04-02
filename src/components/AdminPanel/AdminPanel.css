@@ -1,161 +1,171 @@
+.reservation {
+  background-color: #484c55;
+  display: flex;
+  flex-direction: column;
+  flex-wrap: wrap;
+  width: 320px;
+  margin-top: 10px;
+  margin-right: 10px;
+  margin-left: 10px;
+  padding-top: 10px;
+  padding-bottom: 10px;
+  border-radius: 10px;
 
+  border: rgb(95, 93, 93) solid 1px;
+  align-items: center;
+  justify-content: center;
+}
+.admin-panel {
+  display: flex;
+  flex-direction: column;
+}
+.settings {
+  display: flex;
+  flex-direction: column;
+  border-radius: 5px;
+  justify-content: center;
+  background-color: #222222;
+  margin-bottom: 1em;
+  margin-top: 1em;
+}
+.full-width {
+  width: 15em;
+  align-self: center;
+}
+.half-width {
+  width: 5em;
+  align-self: center;
+}
+.notification {
+  position: fixed;
+  left: 100px;
+  top: 70px;
+  min-height: 80px;
+  min-width: 200px;
+  background-color: rgb(40, 134, 40);
+  border-radius: 5px;
+}
+.rooms {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+}
+.room {
+  min-width: 350px;
+  margin-top: 10px;
+  background: #363638;
+  border-radius: 10px;
+  margin-right: 10px;
 
-.reservation{
-    background-color: #484c55;
-    display: flex;
-    flex-direction: column;
-    flex-wrap: wrap;
-    width: 320px;
-    margin-top: 10px;
-    margin-right: 10px;
-    margin-left: 10px;
-    padding-top: 10px;
-    padding-bottom: 10px;
-    border-radius: 10px;
-
-    border: rgb(95, 93, 93) solid 1px;
-    align-items: center;
-    justify-content: center;
+  padding: 15px 5px;
 }
-.admin-panel{
-    display: flex;
-    flex-direction: column;
+.currently {
+  border-radius: 5px;
+  background: rgb(211, 0, 0);
+  padding: 5px 5px;
 }
-.notification{
-    position:fixed;
-    left: 100px;
-    top: 70px;
-    min-height: 80px;
-    min-width: 200px;
-    background-color: rgb(40, 134, 40);
-    border-radius: 5px;
-
+.cancel {
+  background: transparent;
+  border: transparent;
+  color: white;
+  position: relative;
+  left: -140px;
+  top: 10px;
+  margin-top: -15px;
+  transition: linear 0.2s;
 }
-.rooms{
-    display:flex;
-    flex-direction: row;
-    flex-wrap: wrap;
+.options-room {
+  background: transparent;
+  border: transparent;
+  color: white;
+  position: relative;
+  float: left;
+  margin-top: 5px;
+  margin-left: 10px;
+  padding: 5px 5px;
+  margin-right: -25px;
+  text-align: center;
+  transition: linear 0.2s;
 }
-.room{
-    min-width: 350px;
-    margin-top: 10px;
-    background: #363638;
-    border-radius: 10px;
-    margin-right: 10px;
-    
-    padding: 15px 5px;
+.options-room:hover {
+  color: rgb(184, 184, 184);
 }
-.currently{
-    border-radius: 5px;
-    background: rgb(211, 0, 0);
-    padding: 5px 5px;
+.options {
+  position: absolute;
+  z-index: 150;
+  background: #414142;
+  border: 1px solid rgb(87, 86, 86);
+  font-size: 12px;
+  border-radius: 10px;
+  padding: 10px 10px;
+  text-align: left;
+  margin-top: 10px;
+  overflow: hidden;
+  white-space: nowrap;
+  color: white;
 }
-.cancel{
-    background: transparent;
-    border: transparent;
-    color: white;
-    position:relative;
-    left: -140px;
-    top: 10px;
-    margin-top: -15px;
-    transition: linear 0.2s;
+.option:hover {
+  cursor: pointer;
+  text-decoration: underline;
 }
-.options-room{
-    background: transparent;
-    border: transparent;
-    color: white;
-    position:relative;
-    float: left;
-    margin-top: 5px;
-    margin-left: 10px;
-    padding: 5px 5px;
-    margin-right: -25px;
-    text-align: center;
-    transition: linear 0.2s;
-
-}
-.options-room:hover{
-    color:rgb(184, 184, 184);
-}
-.options{
-    position: absolute;
-    z-index: 150;
-    background: #414142;
-    border: 1px solid rgb(87, 86, 86);
-    font-size: 12px;
-    border-radius: 10px;
-    padding: 10px 10px;
-    text-align: left;
-    margin-top: 10px;
-    overflow: hidden;
-    white-space: nowrap;
-    color: white;
-}
-.option:hover{
-    cursor:pointer;
-    text-decoration: underline;
-}
-.options-room:after{
-    content: '•••';
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%) rotate(90deg);
-    font-size: 22px;
+.options-room:after {
+  content: "•••";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) rotate(90deg);
+  font-size: 22px;
 }
 
-.cancel:hover, .options-room:hover{
-    cursor: pointer;
+.cancel:hover,
+.options-room:hover {
+  cursor: pointer;
 }
 .option {
-    display: inline-block;
-    position: relative;
-    
+  display: inline-block;
+  position: relative;
 }
-  
+
 .option:after {
-    content: '';
-    position: absolute;
-    width: 100%;
-    transform: scaleX(0);
-    height: 2px;
-    bottom: 0;
-    left: 0;
-    background-color: currentColor;
-    transform-origin: bottom right;
-    transition: transform 0.25s ease-out;
+  content: "";
+  position: absolute;
+  width: 100%;
+  transform: scaleX(0);
+  height: 2px;
+  bottom: 0;
+  left: 0;
+  background-color: currentColor;
+  transform-origin: bottom right;
+  transition: transform 0.25s ease-out;
 }
-  
+
 .option:hover:after {
-    transform: scaleX(1);
-    transform-origin: bottom left;
+  transform: scaleX(1);
+  transform-origin: bottom left;
 }
-.cancel:hover{
-    background: transparent;
-    color:black;
+.cancel:hover {
+  background: transparent;
+  color: black;
 }
 
-span{
-    margin-bottom: 5px;
+span {
+  margin-bottom: 5px;
 }
-input{
-    background: transparent;
-    border: none;
-    border-bottom: 2px solid gray;
-    color: white;
-    max-width: 200px;
-    margin-top: 5px;
-    margin-bottom: 10px; 
-    text-align: center;
-    font-size: 17px;
-    transition: linear 0.2s;
+input {
+  background: transparent;
+  border: none;
+  border-bottom: 2px solid gray;
+  color: white;
+  margin-top: 5px;
+  margin-bottom: 10px;
+  text-align: center;
+  font-size: 17px;
+  transition: linear 0.2s;
 }
-input[type="number"]{
-    max-width: 80px;
-}
-input:focus, textarea:focus {
-    outline: none;
+input:focus,
+textarea:focus {
+  outline: none;
 
-    border-bottom: 2px solid white;
-    border-radius: 2px;
+  border-bottom: 2px solid white;
+  border-radius: 2px;
 }

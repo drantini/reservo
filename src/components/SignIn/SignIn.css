@@ -1,16 +1,19 @@
-button{
-    border-radius: 5px;
-    width: auto;
-    margin-top: 10px;
-    margin-right: 10px;
-    margin-bottom: 5px;
-    margin-left: 10px;
-
+button {
+  border-radius: 5px;
+  width: auto;
+  margin-top: 10px;
+  margin-right: 10px;
+  margin-bottom: 5px;
+  margin-left: 10px;
 }
-.forgot{
-    color: gray;
-    
+.login {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
-.forgot:hover{
-    cursor: pointer;
+.forgot {
+  color: gray;
+}
+.forgot:hover {
+  cursor: pointer;
 }

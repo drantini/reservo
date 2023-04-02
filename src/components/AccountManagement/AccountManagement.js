@@ -32,11 +32,11 @@ function Row(props){
     }
 
     const editReservation = () => {
-        firestore().collection(`stations/${props.roomId}/bookings`).doc(props.deleteId).collection('private').doc('0').update({
+        firestore().collection(`system/${props.roomId}/bookings`).doc(props.deleteId).collection('private').doc('0').update({
             customer_name: name,
             phone_number: number,
         }).then(() => {
-            firestore().collection(`stations/${props.roomId}/bookings`).doc(props.deleteId).update({
+            firestore().collection(`system/${props.roomId}/bookings`).doc(props.deleteId).update({
                 start_time: firestore.Timestamp.fromDate(reservationDate[0]),
                 end_time: firestore.Timestamp.fromDate(new Date(reservationDate[0].getTime() + 30 * 60000)),
             }).then(() => {
@@ -52,12 +52,12 @@ function Row(props){
     const fetchRoom = () => {
         setBookings([])
 
-        firestore().collection('stations').doc('main').get().then((querySnapshot) => {
+        firestore().collection('system').doc('main').get().then((querySnapshot) => {
             let data = querySnapshot.data();
             let id = querySnapshot.id
             setOpenHours(data.openHours);
 
-            firestore().collection('stations/' + id + '/bookings').get().then((querySnapshot) => {
+            firestore().collection('system/' + id + '/bookings').get().then((querySnapshot) => {
                 querySnapshot.forEach((doc) => {
                     if (!(reservationDate.length > 0 && reservationDate[0].getTime() == doc.data().end_time.seconds * 1000)){
                         setBookings(prevState => [
@@ -91,7 +91,7 @@ function Row(props){
     }
     const cancelReservation = () => {
         if(window.confirm("Naozaj chcete zrušiť rezerváciu?")){
-            firestore().collection(`stations/${props.roomId}/bookings`).doc(props.deleteId).delete().then(() => {
+            firestore().collection(`system/${props.roomId}/bookings`).doc(props.deleteId).delete().then(() => {
                 setTimeout(() =>{
                     props.fetch()
                 }, 1000)
@@ -102,9 +102,7 @@ function Row(props){
         
     }
     useEffect(() => {
-        
         fetchRoom();
-        
     }, [])
 
     return(
@@ -174,14 +172,14 @@ function AccountManagement(props){
     }
     const fetchReservations = () => {
         setUserReservations([]);
-        firestore().collection(`stations/main/bookings`).where("uid", "==", props.user.uid).get().then((querySnapshot) => {
+        firestore().collection(`system/main/bookings`).where("uid", "==", props.user.uid).get().then((querySnapshot) => {
             
             querySnapshot.forEach(async (doc) => {
                 let reservation = {};
                 reservation = doc.data();
                 reservation.roomId = 'main';
                 reservation.deleteId = doc.id;
-                let result = await firestore().doc(`stations/main/bookings/${doc.id}/private/0`).get();
+                let result = await firestore().doc(`system/main/bookings/${doc.id}/private/0`).get();
                 reservation.customer_name = result.data().customer_name;
                 reservation.phone_number = result.data().phone_number;
                 setUserReservations(prev => [...prev, reservation]);

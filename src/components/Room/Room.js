@@ -33,7 +33,7 @@ function Room(props){
     const [close, setCloseHour] = useState(0);
     const getBookings = () => {
         setShowLoading(true)
-        firestore().collection('stations').where('name', '==', props.name).get().then((querySnapshot) => {
+        firestore().collection('system').where('name', '==', props.name).get().then((querySnapshot) => {
             querySnapshot.forEach((doc) => {
                 setOpenHour(doc.data().openHours[0])
                 setCloseHour(doc.data().openHours[1])
@@ -45,8 +45,8 @@ function Room(props){
                 let older = Date.now();
                 older -= 1800000;
                 var checkDate = firestore.Timestamp.fromDate(new Date(current));
-                setBookingReference(firestore().collection('stations/' + doc.id + '/bookings'));
-                return setBookingsQuery(firestore().collection('stations/' + doc.id + '/bookings').orderBy('start_time').where("start_time", "<=", checkDate).where("start_time", ">", older))
+                setBookingReference(firestore().collection('system/' + doc.id + '/bookings'));
+                return setBookingsQuery(firestore().collection('system/' + doc.id + '/bookings').orderBy('start_time').where("start_time", "<=", checkDate).where("start_time", ">", older))
             });
             setShowLoading(false);
         });
@@ -55,12 +55,12 @@ function Room(props){
         getBookings();
 
     }, [])
-    const stations = firestore().collection('stations')
+    const system = firestore().collection('system')
     const removeRoom = () => {
         setShowMenu(false)
 
         setShowLoading(true);
-        stations.doc(roomId).delete().then(() => {
+        system.doc(roomId).delete().then(() => {
             setShowLoading(false);
             window.location.reload();
 
@@ -76,7 +76,7 @@ function Room(props){
         if (open>close){
             return alert("Can't open earlier than close.")
         }
-        let stationRef = firestore().collection('stations').doc(roomId);
+        let stationRef = firestore().collection('system').doc(roomId);
         return stationRef.update({
             openHours: [parseFloat(open), parseFloat(close)]
         }).then(() => {
