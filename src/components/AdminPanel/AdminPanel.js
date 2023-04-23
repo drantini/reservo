@@ -50,7 +50,7 @@ function ReservationRow({ id, name, number, date, rawDate }) {
     );
 }
 
-function AdminPanel(props) {
+function AdminPanel() {
     const [reservations, setReservations] = useState([]);
     const [nameCompany, setNameCompany] = useState("");
     const [openHours, setOpenHours] = useState([]);
@@ -74,7 +74,8 @@ function AdminPanel(props) {
                 const reservationsRef = firestore()
                     .collection("system")
                     .doc(doc.id)
-                    .collection("bookings");
+                    .collection("bookings")
+                    .orderBy("start_time");
                 let roomId = doc.id;
                 reservationsRef.get().then((querySnapshot) => {
                     querySnapshot.forEach((doc) => {
@@ -130,7 +131,7 @@ function AdminPanel(props) {
             <button className="signin-btn" onClick={SignOut}>
                 Odhlásiť sa
             </button>
-            <h2>Administrátorsky panel</h2>
+            <h2>Administrátorský panel</h2>
             <div class="settings">
                 <h3>Nastavenia</h3>
                 <p>Názov firmy</p>

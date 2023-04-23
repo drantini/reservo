@@ -1,6 +1,5 @@
 import "./ReservationSystem.css";
 import React, { Fragment, useEffect, useState } from "react";
-import PopUp from "../PopUp/PopUp";
 
 import { firestore } from "../../helpers/firebase";
 import { Step1, Step2, Step3 } from "../Steps/Steps";
