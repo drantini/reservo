@@ -10,4 +10,5 @@ Reservo includes clean and intuitive reservation system with easy-to-use admin p
 
 ## How to setup?
 
-Download all files and do 'yarn start'
+Clone the repository,
+run: 'yarn && yarn start'
