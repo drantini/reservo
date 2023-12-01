@@ -2,7 +2,7 @@
 
 ## What is reservo?
 
-Reservo is fully working reservation system for many things like restaurants, laser arenas and hotels.
+Reservo is reservation system for barbers, dentists and other service providers.
 
 ## What does it include?
 
